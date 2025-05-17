@@ -61,7 +61,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get ('POSTGRES_DB', 'cinema'), #cinema si var env pas trouvée
         'USER': os.environ.get ('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get ('POSTGRES_PASSWORD'),
+        'PASSWORD': os.environ.get ('POSTGRES_PASSWORD', 'postgres'), #erreur migration si valeur par défaut non renseignée
         'HOST': os.environ.get ('DB_HOST', 'db'),
         'PORT': os.environ.get ('DB_PORT', '5432'),
     }
@@ -97,3 +97,4 @@ REST_FRAMEWORK =  {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # supprimer les avertissement lors des migrations
