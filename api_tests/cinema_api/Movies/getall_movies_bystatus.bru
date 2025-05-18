@@ -1,0 +1,14 @@
+meta {
+  name: Lister films par statut
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/films/?statut=archive
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

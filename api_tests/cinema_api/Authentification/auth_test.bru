@@ -1,0 +1,28 @@
+meta {
+  name: Obtenir un token
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/api-token-auth/
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "melissa",
+    "password": "postgres"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.token);
+  }
+}

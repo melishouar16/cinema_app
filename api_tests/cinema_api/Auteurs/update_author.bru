@@ -1,0 +1,22 @@
+meta {
+  name: Modifier un auteur
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/auteurs/1/
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Token {{token}}
+}
+
+body:json {
+  {
+    "nom": "James Cameron",
+    "email": "cameron.updated@gmail.com"
+  }
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Modifier un film
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/films/1/
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Token {{token}}
+}
+
+body:json {
+  {
+    "titre": "Avatar (Edition spéciale)",
+    "description": "Un film de science-fiction sur la planète Pandora et ses habitants",
+    "evaluation": 4
+  }
+}

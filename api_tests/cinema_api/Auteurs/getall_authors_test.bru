@@ -1,0 +1,14 @@
+meta {
+  name: Lister tous les auteurs
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/auteurs/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

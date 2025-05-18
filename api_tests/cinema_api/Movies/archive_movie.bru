@@ -1,0 +1,14 @@
+meta {
+  name: Archiver un film
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/films/1/archiver/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

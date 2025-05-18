@@ -1,0 +1,23 @@
+meta {
+  name: Créer un auteur
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auteurs/
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Token {{token}}
+}
+
+body:json {
+  {
+    "nom": "James Cameron",
+    "email": "jamescameron@gmail.com",
+    "date_naissance": "1954-08-16"
+  }
+}
