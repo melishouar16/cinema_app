@@ -3,8 +3,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Auteur, Film
 from .serializers import AuteurSerializer, FilmSerializer
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
+@method_decorator(cache_page(60 * 15), name='list')      # 15 min
+@method_decorator(cache_page(60 * 30), name='retrieve')
 class AuteurViewSet(viewsets.ModelViewSet):
     queryset = Auteur.objects.all()
     serializer_class = AuteurSerializer
@@ -18,7 +23,8 @@ class AuteurViewSet(viewsets.ModelViewSet):
             )
         return super().destroy(request, *args, **kwargs)
 
-
+@method_decorator(cache_page(60 * 10), name='list')
+@method_decorator(cache_page(60 * 20), name='retrieve')
 class FilmViewSet(viewsets.ModelViewSet):
     queryset = Film.objects.all()
     serializer_class = FilmSerializer
@@ -36,3 +42,13 @@ class FilmViewSet(viewsets.ModelViewSet):
         film.statut = 'archive'
         film.save()
         return Response({'statut': 'Film archivé'})
+
+
+@method_decorator(cache_page(60 * 15), name='list')
+class AuteurViewSet(viewsets.ModelViewSet):
+    queryset = Auteur.objects.all()
+    serializer_class = AuteurSerializer
+
+    def list(self, request):
+        print("test de cache")
+        return super().list(request)

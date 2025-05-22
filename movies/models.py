@@ -27,7 +27,7 @@ class Film(models.Model):
     description = models.TextField()
     date_sortie = models.DateField()
     evaluation = models.IntegerField (choices=Evaluation.choices) # .choices appartient à IntegerChoices
-    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE, related_name='films') #on_delete est obligatoire depuis django 2.0 ?
+    auteur = models.ForeignKey(Auteur, on_delete=models.PROTECT, related_name='films') #on_delete est obligatoire depuis django 2.0 ?
     statut = models.CharField (
         max_length=10,
         choices=Statut.choices,

@@ -1,0 +1,27 @@
+[
+    {
+        "model": "movies.auteur",
+        "pk": 1,
+        "fields": {
+            "nom": "Steven Moffat",
+            "email": "moffat@bbc.com",
+            "date_naissance": "1961-11-18",
+            "date_creation": "2025-05-22",
+            "date_modification": "2025-05-22"
+        }
+    },
+    {
+        "model": "movies.film",
+        "pk": 1,
+        "fields": {
+            "titre": "A Studyee in Pink",
+            "description": "Sherlock Holmes et John Watson enquêtent sur une série de suicides mystérieux à Londres. Un chauffeur de taxi semble lié aux morts, mais quel est son mobile ?",
+            "date_sortie": "2010-07-25",
+            "evaluation": 5,
+            "auteur": 1,
+            "statut": "publie",
+            "date_creation": "2025-05-22T09:00:00Z",
+            "date_modification": "2025-05-22T09:00:00Z"
+        }
+    }
+]
