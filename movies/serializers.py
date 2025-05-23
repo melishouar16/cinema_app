@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu
+from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu, UserProfile
 from rest_framework.reverse import reverse
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 
 class FilmSerializer(serializers.ModelSerializer):
     _links = serializers.SerializerMethodField()
@@ -158,3 +160,68 @@ class EnqueteDetailsSerializer(serializers.ModelSerializer):
             links['publier'] = f"{reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request)}publier/"
 
         return links
+
+
+# add  user profile serializers
+
+#infos profil
+class UserProfileSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['role', 'date_creation', 'date_modification', 'is_active']
+        read_only_fields =  ['date_creation', 'date_modification']
+
+#affiche infos user + infos profil (du serializer precedent)
+class UserSerializer (serializers.ModelSerializer):
+    profile = UserProfileSerializer(read_only = True)
+    _links = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile', '_links']
+        read_only_fields = ['id', 'date_joined']
+
+    def get_links(self, obj):
+        request = self.context.get ('request')
+        if not request:
+            return {}
+
+        return {
+            'self': f"/api/users/{obj.pk}/",
+            'enquetes_creees': f"/api/enquetes/?createur={obj.pk}",
+            'sessions': f"/api/sessions/?joueur={obj.pk}",
+            'evaluations': f"/api/evaluations/?evaluateur={obj.pk}",
+        }
+
+
+# pour l'inscription
+class RegisterSerializer (serializers.ModelSerializer):
+    password = serializers.CharField(write_only = True, validators = [validate_password]) # est accessible uniquement en ecriture mais ne s'affiche jamais
+    password_confirm = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'password_confirm', 'first_name', 'last_name']
+
+    def validate (self, attrs):
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError("Les mots de passe sont différents")
+        return attrs
+
+    def validate_email(self, value):
+        if User.objects.filter(email = value).exists ():
+            raise serializers.ValidationError (" Cet email existe déja")
+        return value
+
+    def create(self, validated_data):
+        #supprimer password_confirm car plus besoin apres validation
+        validated_data.pop('password_confirm')
+        password = validated_data.pop('password')
+
+        user = User.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        return user
+
+
