@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import json
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Auteur(models.Model):
     nom = models.CharField(max_length=100)
@@ -107,3 +108,50 @@ class  EvaluationEnquete(models.Model):
 
     def __str__(self):
         return f"{self.evaluateur.username} - {self.enquete.titre} - {self.note}"
+
+class UserProfile(models.Model):
+    class Role(models.TextChoices):
+        ADMIN = 'admin', 'Administrateur'
+        VISITEUR = 'visiteur', 'Visiteur'        # Non connecté, lecture seule
+        UTILISATEUR = 'utilisateur', 'Utilisateur'  # Connecté, peut tout faire
+
+    # créer modéle de profil étendu  de User
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name= 'profile')
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.VISITEUR)
+    date_creation = models.DateTimeField(auto_now_add = True)
+    date_modification = models.DateTimeField(auto_now = True)
+    is_active = models.BooleanField(default= True)
+
+    def __str__(self):
+        return f"{self.user.username} ({self.get_role_display()})"
+
+    def can_create_enquetes(self):
+        return self.role in [self.Role.ADMIN, self.Role.UTILISATEUR] # retourne boolean
+
+    def can_play_enquetes(self):
+        return self.role in [self.Role.ADMIN, self.Role.UTILISATEUR]
+
+    def can_evaluate(self):
+        return self.role in [self.Role.ADMIN, self.Role.UTILISATEUR]
+
+    def is_admin(self):
+        return self.role == self.Role.ADMIN
+
+    def is_visiteur(self):
+        return self.role == self.Role.VISITEUR
+
+#créer automatiquement un profil à chaque fois qu'un user est créé
+@receiver(post_save, sender = User)
+def create_user_profile (sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+# sauvegarder le profil automatiquement
+@receiver (post_save, sender=User)
+def save_user_profile (sender, instance, **kwargs):
+    if hasattr (instance, 'profile'):
+        instance.profile.save()
+
+
+
+
