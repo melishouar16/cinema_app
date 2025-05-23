@@ -83,6 +83,8 @@ class SessionJeu(models.Model):
 
     etape_actuelle = models.IntegerField(default=1)
 
+    statut = models.CharField(max_length=10, choices=Statut.choices, default=Statut.EN_COURS)
+    date_creation = models.DateTimeField(auto_now_add=True)
     class Meta:
         unique_together = ['joueur', 'enquete']
 
