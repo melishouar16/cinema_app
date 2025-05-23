@@ -1,0 +1,14 @@
+meta {
+  name: Récupérer une enquête
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/enquetes/1/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

@@ -1,0 +1,14 @@
+meta {
+  name: Lister toutes les enquêtes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/enquetes/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

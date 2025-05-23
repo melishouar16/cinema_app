@@ -1,0 +1,26 @@
+meta {
+  name: Créer une enquête
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/enquetes/
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Token {{token}}
+}
+
+body:json {
+  {
+    "titre": "Meurtre sur le Titanic",
+    "description": "Une enquête policière à bord du célèbre paquebot",
+    "scenario_json": "{\"contexte\": \"1912, à bord du Titanic\", \"suspects\": [\"Le capitaine\", \"Le mécanicien\"], \"indices\": [\"Une clé mystérieuse\", \"Du sang sur le pont\"]}",
+    "film_source": 1,
+    "createur": 1,
+    "statut": "brouillon"
+  }
+}

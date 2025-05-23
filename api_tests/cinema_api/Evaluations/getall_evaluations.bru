@@ -1,0 +1,14 @@
+meta {
+  name: Lister mes évaluations
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/evaluations/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}
