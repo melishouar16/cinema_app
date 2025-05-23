@@ -2,10 +2,12 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu
-from .serializers import AuteurSerializer, FilmSerializer, EnqueteSerializer, EnqueteDetailsSerializer, SessionJeuSerializer, EvaluationEnqueteSerializer
+from .serializers import UserSerializer, RegisterSerializer, AuteurSerializer, FilmSerializer, EnqueteSerializer, EnqueteDetailsSerializer, SessionJeuSerializer, EvaluationEnqueteSerializer, UserSerializer
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 @method_decorator(cache_page(60 * 15), name='list')
@@ -61,3 +63,31 @@ class SessionJeuViewSet (viewsets.ModelViewSet):
 class EvaluationEnqueteViewSet (viewsets.ModelViewSet):
     queryset = EvaluationEnquete.objects.all()
     serializer_class = EvaluationEnqueteSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        """Permissions selon l'action"""
+        if self.action == 'create':  # Inscription
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RegisterSerializer
+        return UserSerializer
+
+    def get_queryset(self):
+        # Admins voient tout, autres voient juste leur profil
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            if self.request.user.profile.is_admin():
+                return User.objects.all()
+        return User.objects.filter(id=self.request.user.id)
+
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        """Mon profil : GET /api/users/me/"""
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)

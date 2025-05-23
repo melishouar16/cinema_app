@@ -1,0 +1,14 @@
+meta {
+  name: Mon profil
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/users/me/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Inscription utilisateur
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/users/
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "melissa",
+    "email": "melissa@gmail.com",
+    "password": "motdepasse123",
+    "password_confirm": "motdepasse123",
+    "first_name": "Melissa",
+    "last_name": "AIT"
+  }
+}

@@ -181,7 +181,7 @@ class UserSerializer (serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile', '_links']
         read_only_fields = ['id', 'date_joined']
 
-    def get_links(self, obj):
+    def get__links(self, obj):
         request = self.context.get ('request')
         if not request:
             return {}

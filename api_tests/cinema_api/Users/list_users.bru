@@ -1,0 +1,14 @@
+meta {
+  name: Liste utilisateurs (admin)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/users/
+  body: none
+}
+
+headers {
+  Authorization: Token {{token}}
+}
