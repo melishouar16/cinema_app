@@ -43,7 +43,7 @@ class SessionJeuSerializer (serializers.ModelSerializer):
         fields = [
             'id', 'joueur', 'joueur_nom',
             'enquete', 'enquete_titre',
-            'etape_actuelle', 'statut' 'date_creation'
+            'etape_actuelle', 'statut', 'date_creation'
         ]
 
 class EvaluationEnqueteSerializer (serializers.ModelSerializer):
