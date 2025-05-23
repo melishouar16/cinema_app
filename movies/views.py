@@ -1,18 +1,22 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Auteur, Film
-from .serializers import AuteurSerializer, FilmSerializer
+from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu
+from .serializers import AuteurSerializer, FilmSerializer, EnqueteSerializer, EnqueteDetailsSerializer, SessionJeuSerializer, EvaluationEnqueteSerializer
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
 
-@method_decorator(cache_page(60 * 15), name='list')      # 15 min
+@method_decorator(cache_page(60 * 15), name='list')
 @method_decorator(cache_page(60 * 30), name='retrieve')
 class AuteurViewSet(viewsets.ModelViewSet):
     queryset = Auteur.objects.all()
     serializer_class = AuteurSerializer
+
+    def list(self, request):
+        print("test de cache")
+        return super().list(request)
 
     def destroy(self, request, *args, **kwargs):
         auteur = self.get_object()
@@ -22,6 +26,8 @@ class AuteurViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return super().destroy(request, *args, **kwargs)
+
+
 
 @method_decorator(cache_page(60 * 10), name='list')
 @method_decorator(cache_page(60 * 20), name='retrieve')
@@ -44,11 +50,14 @@ class FilmViewSet(viewsets.ModelViewSet):
         return Response({'statut': 'Film archivé'})
 
 
-@method_decorator(cache_page(60 * 15), name='list')
-class AuteurViewSet(viewsets.ModelViewSet):
-    queryset = Auteur.objects.all()
-    serializer_class = AuteurSerializer
+class EnqueteViewSet (viewsets.ModelViewSet):
+    queryset = Enquete.objects.all()
+    serializer_class = EnqueteSerializer
 
-    def list(self, request):
-        print("test de cache")
-        return super().list(request)
+class SessionJeuViewSet (viewsets.ModelViewSet):
+    queryset = SessionJeu.objects.all()
+    serializer_class = SessionJeuSerializer
+
+class EvaluationEnqueteViewSet (viewsets.ModelViewSet):
+    queryset = EvaluationEnquete.objects.all()
+    serializer_class = EvaluationEnqueteSerializer
