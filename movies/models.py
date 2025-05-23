@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+import json
 
 class Auteur(models.Model):
     nom = models.CharField(max_length=100)
@@ -39,3 +41,67 @@ class Film(models.Model):
 
     def __str__(self):
         return self.titre
+
+
+class Enquete (models.Model):
+
+    class Statut(models.TextChoices):
+        BROUILLON = 'brouillon', 'Brouillon'
+        PUBLIE = 'publie', 'Publié'
+        ARCHIVE = 'archive', 'Archivé'
+
+    film_source = models.ForeignKey(Film, on_delete = models.CASCADE, related_name = 'enquetes')
+    createur = models.ForeignKey(User, on_delete = models.CASCADE, related_name= 'enquetes_crees')
+
+    titre = models.CharField(max_length=200)
+    description = models.TextField()
+
+    scenario_json = models.TextField()
+
+    statut = models.CharField(max_length=10, choices=Statut.choices, default= Statut.BROUILLON)
+    evaluation_moyenne = models.FloatField(default=0.0)
+    nombre_evaluations = models.IntegerField(default=0)
+    nombre_parties = models.IntegerField(default=0)
+
+    date_creation = models.DateTimeField(auto_now_add= True)
+    date_modification = models.DateTimeField(auto_now= True)
+
+    def __str__(self):
+        return self.titre
+
+
+class SessionJeu(models.Model):
+
+    class Statut(models.TextChoices):
+        EN_COURS = 'en_cours', 'En cours'
+        TERMINE = 'termine', 'Terminé'
+        ABANDONNE = 'abandonne', 'Abandonné'
+
+    joueur = models.ForeignKey(User,on_delete = models.CASCADE, related_name ='sessions_jeu')
+    enquete = models.ForeignKey(Enquete, on_delete=models.CASCADE, related_name = 'session')
+
+
+    etape_actuelle = models.IntegerField(default=1)
+
+    class Meta:
+        unique_together = ['joueur', 'enquete']
+
+    def __str__(self):
+        return f"{self.joueur.username} - {self.enquete.titre} "
+
+
+class  EvaluationEnquete(models.Model):
+    evaluateur = models.ForeignKey(User, on_delete= models.CASCADE, related_name='evaluations')
+    enquete = models.ForeignKey (Enquete, on_delete=models.CASCADE, related_name='evaluations')
+
+    note =models.IntegerField(choices=Film.Evaluation.choices)
+    commentaire = models.TextField(blank=True)
+
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_modification = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['evaluateur', 'enquete']
+
+    def __str__(self):
+        return f"{self.evaluateur.username} - {self.enquete.titre} - {self.note}"
