@@ -8,7 +8,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
+from rest_framework.decorators import api_view
+from .services.ai_service import InvestigationAIService
 
 @method_decorator(cache_page(60 * 15), name='list')
 @method_decorator(cache_page(60 * 30), name='retrieve')
@@ -91,3 +92,15 @@ class UserViewSet(viewsets.ModelViewSet):
         """Mon profil : GET /api/users/me/"""
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+@api_view(['POST'])
+def test_ai_generation(request):
+    """Test endpoint pour la génération IA"""
+    film_title = request.data.get('titre', 'Titanic')
+    author_name = request.data.get('auteur', None)  # Optionnel - peut être None
+
+    ai_service = InvestigationAIService()
+
+    scenario = ai_service.generate_investigation_scenario(film_title, author_name)
+
+    return Response(scenario)

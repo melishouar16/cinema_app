@@ -1,0 +1,22 @@
+meta {
+  name: Test génération IA
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/test-ai/
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Token {{token}}
+}
+
+body:json {
+   {
+   "titre": "le silence des agneaux "
+   }
+}

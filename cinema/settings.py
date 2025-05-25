@@ -100,10 +100,11 @@ REST_FRAMEWORK =  {
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # supprimer les avertissement lors des migrations
 
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-cinema-cache',
     }
 }
+
+GEMINI_API_KEY= os.environ.get ('GEMINI_API_KEY', 'abc')

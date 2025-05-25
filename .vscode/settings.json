@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.analysis.extraPaths": [
+        "/usr/local/lib/python3.13/site-packages"
+    ],
+    "python.linting.enabled": false
+}

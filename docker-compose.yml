@@ -11,6 +11,7 @@ services:
     environment:
       - DEBUG=1 #activer debogage
       - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
 
     depends_on:
       - db
