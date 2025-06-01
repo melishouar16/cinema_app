@@ -19,10 +19,18 @@ class FilmSerializer(serializers.ModelSerializer):
         links = {
             'self': reverse('film-detail', kwargs={'pk': obj.pk}, request=request),
             'auteur': reverse('auteur-detail', kwargs={'pk': obj.auteur.pk}, request=request),
+            'enquetes': f"{reverse('enquete-list', request=request)}?film_source={obj.pk}",
+            'update': reverse ('film-detail', kwargs={'pk': obj.pk}, request=request),
+            'delete': reverse('film-detail', kwargs={'pk': obj.pk}, request=request),
+              'list': reverse('film-list', request=request)
         }
 
         if obj.statut == 'publie':
             links['archiver'] = f"{reverse('film-detail', kwargs={'pk': obj.pk}, request=request)}archiver/"
+        elif obj.statut == 'brouillon':
+            links['publier'] = f"{reverse('film-detail', kwargs={'pk':obj.pk}, request=request)}publier/"
+
+
 
         return links
 
@@ -36,7 +44,7 @@ class AuteurSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if Auteur.objects.filter(email=value).exists():
-            raise serializers.ValidationError("kl'email existe")
+            raise serializers.ValidationError("l'email existe")
         return value
 
     def get__links(self, obj):
@@ -47,6 +55,10 @@ class AuteurSerializer(serializers.ModelSerializer):
         return {
             'self': reverse('auteur-detail', kwargs={'pk': obj.pk}, request=request),
             'films': f"{reverse('film-list', request=request)}?auteur={obj.pk}",
+            'update': reverse ('auteur-detail', kwargs={'pk': obj.pk}, request=request),
+            'delete': reverse('auteur-detail', kwargs={'pk': obj.pk}, request=request),
+            'list': reverse ('auteur-list', request=request),
+            'create_film': reverse('film-list', request=request)
         }
 
 class EnqueteSerializer(serializers.ModelSerializer):
@@ -73,6 +85,9 @@ class EnqueteSerializer(serializers.ModelSerializer):
         links = {
             'self': reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request),
             'film_source': reverse('film-detail', kwargs={'pk': obj.film_source.pk}, request=request),
+            'update': reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request),
+            'delete': reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request),
+            'list': reverse('enquete-list', request=request)
         }
 
         if obj.statut == 'brouillon':
@@ -101,6 +116,9 @@ class SessionJeuSerializer(serializers.ModelSerializer):
         return {
             'self': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
             'enquete': reverse('enquete-detail', kwargs={'pk': obj.enquete.pk}, request=request),
+            'update': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
+            'delete': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
+            'list': reverse('sessionjeu-list', request=request)
         }
 
 class EvaluationEnqueteSerializer(serializers.ModelSerializer):
@@ -124,6 +142,10 @@ class EvaluationEnqueteSerializer(serializers.ModelSerializer):
         return {
             'self': reverse('evaluationenquete-detail', kwargs={'pk': obj.pk}, request=request),
             'enquete': reverse('enquete-detail', kwargs={'pk': obj.enquete.pk}, request=request),
+            'update': reverse('evaluationenquete-detail', kwargs={'pk': obj.pk}, request=request),
+            'delete': reverse('evaluationenquete-detail', kwargs={'pk': obj.pk}, request=request),
+            'list': reverse('evaluationenquete-list', request=request)
+
         }
 
 # ajout d'un serializer pour afficher les details d'une enquete ( pour film source par exemple afficher description en plus de nom)
@@ -159,6 +181,10 @@ class EnqueteDetailsSerializer(serializers.ModelSerializer):
         if obj.statut == 'brouillon':
             links['publier'] = f"{reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request)}publier/"
 
+        if obj.statut == 'publie':
+            links['archiver'] = f"{reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request)}archiver/"
+
+
         return links
 
 
@@ -187,10 +213,13 @@ class UserSerializer (serializers.ModelSerializer):
             return {}
 
         return {
-            'self': f"/api/users/{obj.pk}/",
-            'enquetes_creees': f"/api/enquetes/?createur={obj.pk}",
-            'sessions': f"/api/sessions/?joueur={obj.pk}",
-            'evaluations': f"/api/evaluations/?evaluateur={obj.pk}",
+            'self': reverse('user-detail', kwargs={'pk': obj.pk}, request=request),
+            'enquetes_creees': f"{reverse('enquete-list', request=request)}?createur={obj.pk}",
+            'sessions': f"{reverse('sessionjeu-list', request=request)}?joueur={obj.pk}",
+            'evaluations': f"{reverse('evaluationenquete-list', request=request)}?evaluateur={obj.pk}",
+
+            'update': reverse('user-detail', kwargs={'pk': obj.pk}, request=request),
+            'list': reverse('user-list', request=request)
         }
 
 
