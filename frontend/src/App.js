@@ -1,18 +1,16 @@
-import logo from './logo.svg';
 import React, { useState, useContext } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from "./store";
-import { AuthProvider, AuthContext } from './context/AuthContext';
-import { NightModeProvider, NightModeContext } from './context/NightModeContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { NightModeProvider, NightModeContext } from './contexts/NightModeContext';
 import { Menu, Button } from './components/molecules';
-import { Typography } from './components/atoms'
+import { Typography } from './components/atoms';
 import * as Pages from './components/pages';
 
 import './App.css';
 
 function App() {
-
   const nightTheme = {
     default: { color: "white" },
     typography: {
@@ -24,7 +22,6 @@ function App() {
     container: { primary: "#1a1a1a" },
     color: "white",
     bgColor: "#1a1a1a"
-
   };
 
   const dayTheme = {
@@ -34,46 +31,37 @@ function App() {
       subTitle: "black",
       link: "#4A90E2",
       paragraph: "black"
-
     },
     container: { primary: 'white' },
     color: "black",
     bgColor: "white"
-
   };
+
 
   const [nightMode, setNightMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
-  let context = useContext(NightModeContext);
+
   const [currentPage, setCurrentPage] = useState("home");
 
   const getPageContent = () => {
-
     switch (currentPage) {
       case "home":
         return <Pages.Home />;
-
       case "create":
         return <Pages.CreateEnquete />;
-
       case "play":
         return <Pages.PlayEnquete />;
-
       case "auth":
         return <Pages.Auth />;
-
       default:
         return <Pages.Home />;
-
     }
   };
 
-  // onglets cliquables
   const menuItems = [
     { slug: "home", text: "Accueil" },
-    { slug: "create", text: "Créer une enquete" },
-
+    { slug: "create", text: "Créer une enquête" },
   ];
 
   return (
@@ -95,6 +83,7 @@ function App() {
                 </Menu.Tab>
               ))}
 
+
               <Button.ToggleNight />
 
               <Typography.Paragraph>
@@ -110,9 +99,5 @@ function App() {
     </Provider>
   );
 }
-
-
-
-
 
 export default App;
