@@ -1,17 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from "./store";
 import { AuthProvider } from './contexts/AuthContext';
-import { NightModeProvider, NightModeContext } from './contexts/NightModeContext';
+import { NightModeProvider } from './contexts/NightModeContext';
 import { Menu, Button } from './components/molecules';
 import { Typography } from './components/atoms';
 import * as Pages from './components/pages';
-
+import { FaHome, FaPlus, FaGamepad, FaUser } from 'react-icons/fa';
 import './App.css';
 
 function App() {
   const nightTheme = {
+    nightMode: true,
     default: { color: "white" },
     typography: {
       title: "white",
@@ -25,6 +26,7 @@ function App() {
   };
 
   const dayTheme = {
+    nightMode: false,
     default: { color: "black" },
     typography: {
       title: "black",
@@ -36,7 +38,6 @@ function App() {
     color: "black",
     bgColor: "white"
   };
-
 
   const [nightMode, setNightMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -60,41 +61,47 @@ function App() {
   };
 
   const menuItems = [
-    { slug: "home", text: "Accueil" },
-    { slug: "create", text: "Créer une enquête" },
+    { slug: "home", text: "Accueil", icon: <FaHome /> },
+    { slug: "create", text: "Créer", icon: <FaPlus /> },
+    { slug: "play", text: "Jouer", icon: <FaGamepad /> },
+    { slug: "auth", text: "Connexion", icon: <FaUser /> },
   ];
 
   return (
     <Provider store={store}>
       <AuthProvider>
-        <ThemeProvider theme={nightMode ? nightTheme : dayTheme}>
-          <NightModeProvider value={{
-            nightMode: nightMode,
-            switchNightMode: () => setNightMode(!nightMode)
-          }}>
+        <NightModeProvider value={{
+          nightMode: nightMode,
+          switchNightMode: () => setNightMode(!nightMode)
+        }}>
+          <ThemeProvider theme={nightMode ? nightTheme : dayTheme}>
+            <div style={{
+              minHeight: '100vh',
+              backgroundColor: nightMode ? nightTheme.bgColor : dayTheme.bgColor,
+              transition: 'background-color 0.3s ease'
+            }}>
 
-            <Menu.Bar>
-              {menuItems.map((item, i) => (
-                <Menu.Tab
-                  key={i}
-                  callBack={() => setCurrentPage(item.slug)}
-                >
-                  {item.text}
-                </Menu.Tab>
-              ))}
+              <Menu.Bar>
+                {menuItems.map((item, i) => (
+                  <Menu.Tab
+                    key={i}
+                    callBack={() => setCurrentPage(item.slug)}
+                    active={currentPage === item.slug}
+                    icon={item.icon}
+                  >
+                    {item.text}
+                  </Menu.Tab>
+                ))}
 
+                <Button.ToggleNight />
+              </Menu.Bar>
 
-              <Button.ToggleNight />
-
-              <Typography.Paragraph>
-                👤 Utilisateur
-              </Typography.Paragraph>
-            </Menu.Bar>
-
-            {getPageContent()}
-
-          </NightModeProvider>
-        </ThemeProvider>
+              <main>
+                {getPageContent()}
+              </main>
+            </div>
+          </ThemeProvider>
+        </NightModeProvider>
       </AuthProvider>
     </Provider>
   );
