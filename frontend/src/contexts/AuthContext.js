@@ -1,19 +1,54 @@
-import React, { createContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const useAuth = () => useContext(AuthContext);
 
-    const user = null;
-    const isAuthenticated = false;
-    const login = () => console.log("Login");
-    const logout = () => console.log("Logout");
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const profile = await authService.getProfile();
+                setUser(profile);
+            } catch (error) {
+                console.log('Pas connecté');
+            }
+            setLoading(false);
+        };
+        checkAuth();
+    }, []);
+
+    const login = async (username, password) => {
+        try {
+            await authService.login(username, password);
+            const profile = await authService.getProfile();
+            setUser(profile);
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    const logout = () => {
+        authService.logout();
+        setUser(null);
+    };
+
+    const isAuthenticated = !!user;
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{
+            user,
+            isAuthenticated,
+            loading,
+            login,
+            logout
+        }}>
             {children}
         </AuthContext.Provider>
     );
 };
-
-export { AuthContext, AuthProvider };

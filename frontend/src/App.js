@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from "./store";
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { NightModeProvider } from './contexts/NightModeContext';
 import { Menu, Button } from './components/molecules';
-import { Typography } from './components/atoms';
 import * as Pages from './components/pages';
 import { FaHome, FaPlus, FaGamepad, FaUser } from 'react-icons/fa';
 import './App.css';
 
-function App() {
+const AppContent = () => {
+  const { isAuthenticated } = useAuth();
+
+  // théme jour/nuit
   const nightTheme = {
     nightMode: true,
     default: { color: "white" },
@@ -39,12 +41,10 @@ function App() {
     bgColor: "white"
   };
 
-  const [nightMode, setNightMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
+  const [nightMode, setNightMode] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
 
+  // navigation simple
   const getPageContent = () => {
     switch (currentPage) {
       case "home":
@@ -64,46 +64,50 @@ function App() {
     { slug: "home", text: "Accueil", icon: <FaHome /> },
     { slug: "create", text: "Créer", icon: <FaPlus /> },
     { slug: "play", text: "Jouer", icon: <FaGamepad /> },
-    { slug: "auth", text: "Connexion", icon: <FaUser /> },
+    { slug: "auth", text: isAuthenticated ? "Profil" : "Connexion", icon: <FaUser /> },
   ];
 
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <NightModeProvider value={{
-          nightMode: nightMode,
-          switchNightMode: () => setNightMode(!nightMode)
-        }}>
-          <ThemeProvider theme={nightMode ? nightTheme : dayTheme}>
-            <div style={{
-              minHeight: '100vh',
-              backgroundColor: nightMode ? nightTheme.bgColor : dayTheme.bgColor,
-              transition: 'background-color 0.3s ease'
-            }}>
+      <NightModeProvider value={{ nightMode, switchNightMode: () => setNightMode(!nightMode) }}>
+        <ThemeProvider theme={nightMode ? nightTheme : dayTheme}>
+          <div style={{
+            backgroundColor: nightMode ? "#1a1a1a" : "white",
+            minHeight: "100vh",
+            color: nightMode ? "white" : "black"
+          }}>
 
-              <Menu.Bar>
-                {menuItems.map((item, i) => (
-                  <Menu.Tab
-                    key={i}
-                    callBack={() => setCurrentPage(item.slug)}
-                    active={currentPage === item.slug}
-                    icon={item.icon}
-                  >
-                    {item.text}
-                  </Menu.Tab>
-                ))}
+            <Menu.Bar>
+              {menuItems.map((item, i) => (
+                <Menu.Tab
+                  key={i}
+                  callBack={() => setCurrentPage(item.slug)}
+                  active={currentPage === item.slug}
+                  icon={item.icon}
+                >
+                  {item.text}
+                </Menu.Tab>
+              ))}
+              <Button.ToggleNight />
+            </Menu.Bar>
 
-                <Button.ToggleNight />
-              </Menu.Bar>
+            <main>
+              {getPageContent()}
+            </main>
 
-              <main>
-                {getPageContent()}
-              </main>
-            </div>
-          </ThemeProvider>
-        </NightModeProvider>
-      </AuthProvider>
+          </div>
+        </ThemeProvider>
+      </NightModeProvider>
     </Provider>
+  );
+};
+
+// react monte AuthProvider et crée le contexte ensuite  useAuth s'execute (contexte disponible)
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
