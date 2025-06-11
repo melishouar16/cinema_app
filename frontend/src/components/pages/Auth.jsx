@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Typography } from "../atoms";
-import { Button, LoginForm } from "../molecules";
+import { Button } from "../molecules";
+import LoginForm from "../molecules/Form/LoginForm";
+import RegisterForm from "../molecules/Form/RegisterForm";
 import { useAuth } from "../../contexts/AuthContext";
 
 const Auth = () => {
     const { isAuthenticated, user, logout } = useAuth();
+    const [activeTab, setActiveTab] = useState('login'); // État pour gérer les onglets
 
     // Si connecté, afficher le profil
     if (isAuthenticated) {
@@ -36,10 +39,45 @@ const Auth = () => {
         );
     }
 
-    // Si pas connecté, afficher le formulaire
+    // si pas connecté, afficher les formulaire avec onglets (inscription/ connexion)
     return (
         <Container.Base>
-            <LoginForm />
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '2rem',
+                borderBottom: '1px solid #ddd'
+            }}>
+                <button
+                    onClick={() => setActiveTab('login')}
+                    style={{
+                        padding: '1rem 2rem',
+                        border: 'none',
+                        backgroundColor: activeTab === 'login' ? '#4A90E2' : 'transparent',
+                        color: activeTab === 'login' ? 'white' : '#333',
+                        cursor: 'pointer',
+                        borderBottom: activeTab === 'login' ? '2px solid #4A90E2' : 'none'
+                    }}
+                >
+                    Connexion
+                </button>
+                <button
+                    onClick={() => setActiveTab('register')}
+                    style={{
+                        padding: '1rem 2rem',
+                        border: 'none',
+                        backgroundColor: activeTab === 'register' ? '#2ECC71' : 'transparent',
+                        color: activeTab === 'register' ? 'white' : '#333',
+                        cursor: 'pointer',
+                        borderBottom: activeTab === 'register' ? '2px solid #2ECC71' : 'none'
+                    }}
+                >
+                    Inscription
+                </button>
+            </div>
+
+            {/* Contenu selon l'onglet actif */}
+            {activeTab === 'login' ? <LoginForm /> : <RegisterForm />}
         </Container.Base>
     );
 };
