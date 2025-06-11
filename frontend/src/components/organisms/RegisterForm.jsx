@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Typography } from "../../atoms";
+import { Container, Typography } from "../atoms";
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({

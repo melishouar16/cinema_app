@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Container, Typography } from "../atoms";
 import { Button } from "../molecules";
-import LoginForm from "../molecules/Form/LoginForm";
-import RegisterForm from "../molecules/Form/RegisterForm";
+import { LoginForm, RegisterForm } from '../organisms';
 import { useAuth } from "../../contexts/AuthContext";
 
 const Auth = () => {

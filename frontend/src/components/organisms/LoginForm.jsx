@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Container, Typography } from "../../atoms";
-import { Button } from "../../molecules";
-import { useAuth } from "../../../contexts/AuthContext";
+import { Container, Typography } from "../atoms";
+import { Button } from "../molecules";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginForm = () => {
     const { login } = useAuth();
