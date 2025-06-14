@@ -53,9 +53,13 @@ class FilmViewSet(viewsets.ModelViewSet):
         return Response({'statut': 'Film archivé'})
 
 
-class EnqueteViewSet (viewsets.ModelViewSet):
+class EnqueteViewSet(viewsets.ModelViewSet):
     queryset = Enquete.objects.all()
     serializer_class = EnqueteSerializer
+
+    def perform_create(self, serializer):
+        """Auto-assigner le créateur à l'utilisateur connecté"""
+        serializer.save(createur=self.request.user)
 
 class SessionJeuViewSet (viewsets.ModelViewSet):
     queryset = SessionJeu.objects.all()
@@ -97,10 +101,23 @@ class UserViewSet(viewsets.ModelViewSet):
 def test_ai_generation(request):
     """Test endpoint pour la génération IA"""
     film_title = request.data.get('titre', 'Titanic')
-    author_name = request.data.get('auteur', None)  # Optionnel - peut être None
+    author_name = request.data.get('auteur', None)
 
     ai_service = InvestigationAIService()
 
+
+    film_info = ai_service.complete_film_info(film_title, author_name)
+
+    if not film_info.get('found'):
+        return Response({"error": True, "message": f"Film '{film_title}' introuvable"})
+
+
     scenario = ai_service.generate_investigation_scenario(film_title, author_name)
 
-    return Response(scenario)
+
+    response_data = {
+        **film_info,
+        **scenario
+    }
+
+    return Response(response_data)

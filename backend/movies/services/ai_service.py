@@ -11,12 +11,17 @@ class InvestigationAIService:
     def __init__(self):
        genai.configure(api_key=settings.GEMINI_API_KEY)
        self.model = genai.GenerativeModel('gemini-1.5-flash')
-
     def complete_film_info(self, film_title: str, author_name: str = None) -> Dict[str, Any]:
         """
         L'IA génère automatiquement la description du film
         """
-        prompt = f'Pour le film "{film_title}"{f" de {author_name}" if author_name else ""}, réponds en JSON: {{"titre": "...", "auteur": "...", "description": "...", "found": true}} ou {{"found": false}} si inexistant.'
+        prompt = f'''Pour le film "{film_title}"{f" de {author_name}" if author_name else ""}, trouve le VRAI réalisateur et réponds en JSON:
+
+        {{"titre": "titre exact du film", "auteur": "prénom nom complet du réalisateur", "description": "description du film", "found": true}}
+
+        ou {{"found": false}} si inexistant.
+
+        IMPORTANT: Pour "auteur", donne le NOM COMPLET du réalisateur (ex: "James Cameron", "Christopher Nolan"), jamais "Réalisateur de...".'''
 
         try:
             response = self.model.generate_content(prompt)

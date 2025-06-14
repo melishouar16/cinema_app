@@ -71,7 +71,7 @@ class EnqueteSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'titre', 'description', 'scenario_json',
             'film_source', 'film_source_titre',
-            'createur', 'createur_nom',
+             'createur_nom',
             'statut', 'evaluation_moyenne', 'nombre_evaluations', 'nombre_parties',
             'date_creation', 'date_modification', '_links'
         ]
