@@ -36,9 +36,6 @@ const CreateEnquete = () => {
                 })
             });
 
-            if (!aiResponse.ok) {
-                throw new Error('Erreur lors de la génération IA');
-            }
 
             const aiData = await aiResponse.json();
 
@@ -116,7 +113,7 @@ const CreateEnquete = () => {
                 titre: aiData.titre || `Enquête - ${filmTitre}`,
                 description: `Enquête générée par IA`,
                 film_source: newFilm.id,
-                statut: 'brouillon',
+                statut: 'publie',
                 scenario_json: JSON.stringify(aiData)
             };
 

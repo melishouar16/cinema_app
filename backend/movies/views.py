@@ -61,6 +61,12 @@ class EnqueteViewSet(viewsets.ModelViewSet):
         """Auto-assigner le créateur à l'utilisateur connecté"""
         serializer.save(createur=self.request.user)
 
+    def get_permissions(self):
+        """Les visiteurs peuvent voir les enquêtes"""
+        if self.action in ['list', 'retrieve']:  # GET
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
 class SessionJeuViewSet (viewsets.ModelViewSet):
     queryset = SessionJeu.objects.all()
     serializer_class = SessionJeuSerializer
@@ -102,6 +108,18 @@ def test_ai_generation(request):
     """Test endpoint pour la génération IA"""
     film_title = request.data.get('titre', 'Titanic')
     author_name = request.data.get('auteur', None)
+
+    existing_enquetes = Enquete.objects.filter(
+        titre__icontains=film_title.strip(),
+        statut='publie'
+    )
+
+    if existing_enquetes.exists():
+        return Response({
+            'error': True,
+            'message': f'Une enquête sur "{film_title}" existe déjà. Choisissez un autre film.'
+        }, status=400)
+
 
     ai_service = InvestigationAIService()
 

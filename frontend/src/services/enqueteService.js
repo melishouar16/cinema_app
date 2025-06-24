@@ -1,20 +1,42 @@
+// frontend/src/services/enqueteService.js
 const API_BASE = 'http://localhost:8000';
 
 const enqueteService = {
     // Récupérer toutes les enquêtes
     async getAll() {
+        console.log('🔍 Début récupération enquêtes...');
+        console.log('🌐 URL:', `${API_BASE}/api/enquetes/`);
+
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE}/api/enquetes/`, {
-            headers: {
-                'Authorization': token ? `Token ${token}` : ''
+        console.log('🔑 Token:', token ? 'Présent' : 'Absent');
+
+        const headers = {
+            'Authorization': token ? `Token ${token}` : ''
+        };
+        console.log('📋 Headers:', headers);
+
+        try {
+            const response = await fetch(`${API_BASE}/api/enquetes/`, { headers });
+
+            console.log('📡 Réponse status:', response.status);
+            console.log('📡 Réponse ok:', response.ok);
+            console.log('📡 Réponse headers:', Object.fromEntries(response.headers.entries()));
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ Erreur réponse:', errorText);
+                throw new Error(`Erreur ${response.status}: ${errorText}`);
             }
-        });
 
-        if (!response.ok) {
-            throw new Error('Erreur lors de la récupération des enquêtes');
+            const data = await response.json();
+            console.log('✅ Données reçues:', data);
+            console.log('📊 Nombre d\'enquêtes:', data.length || (data.results && data.results.length) || 'Inconnu');
+
+            return data;
+        } catch (error) {
+            console.error('💥 Erreur fetch:', error);
+            throw error;
         }
-
-        return response.json();
     },
 
     // Récupérer une enquête par ID
@@ -35,11 +57,12 @@ const enqueteService = {
 
     // Créer une nouvelle enquête
     async create(enqueteData) {
+
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error('Vous devez être connecté pour créer une enquête');
         }
-
+        console.log('📤 Données envoyées à l\'API:', enqueteData);
         const response = await fetch(`${API_BASE}/api/enquetes/`, {
             method: 'POST',
             headers: {
@@ -51,7 +74,9 @@ const enqueteService = {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || 'Erreur lors de la création de l\'enquête');
+            // Gestion d'erreur améliorée
+            const errorMessage = errorData.film_source?.[0] || errorData.createur?.[0] || errorData.detail || 'Erreur lors de la création de l\'enquête';
+            throw new Error(errorMessage);
         }
 
         return response.json();
