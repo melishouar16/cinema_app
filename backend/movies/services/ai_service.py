@@ -29,6 +29,30 @@ class InvestigationAIService:
         except:
             return {"found": False}
 
+
+
+# def complete_film_info(self, film_title: str, author_name: str = None) -> Dict[str, Any]:
+#     """
+#     L'IA génère automatiquement la description du film
+#     """
+#     prompt = f'''Pour le film "{film_title}"{f" de {author_name}" if author_name else ""}, trouve le VRAI réalisateur et réponds en JSON:
+
+#     {{"titre": "titre exact du film", "auteur": "prénom nom complet du réalisateur", "description": "description du film", "found": true}}
+
+#     ou {{"found": false}} si inexistant.
+
+#     IMPORTANT: Pour "auteur", donne le NOM COMPLET du réalisateur (ex: "James Cameron", "Christopher Nolan"), jamais "Réalisateur de...".'''
+
+#     try:
+#         response = self.model.generate_content(prompt)
+#         print(f"🔍 Réponse brute: {response.text}")
+#         return self.extract_json_from_reponse(response.text)
+#     except Exception as e:
+#         print(f"❌ Erreur complete_film_info: {e}")
+#         return {"found": False}
+
+
+
     def is_detective_film(self, film_title:str, film_description: str, author_name: str) -> bool:
         validation_prompt = f"""
 
@@ -67,67 +91,89 @@ Répondez UNIQUEMENT par "OUI" ou "NON".
 
 
     def build_prompt(self, film_title: str, film_description: str, author_name: str) -> str:
-        """
-            Construction du prompt
-        """
-        # on fait un return pour utiliser build_prompt apres dans generate_investigation_scenario
         return f"""
+    Tu es un créateur d'enquêtes policières interactives. Tu dois créer une NOUVELLE ENQUÊTE qui s'inspire de l'univers du film "{film_title}" de {author_name}, mais SANS reprendre l'intrigue originale.
 
-Tu es un créateur d'enquetes policieres interactives, Tu dois créer une RÉADAPTATION EXACTE du film "{film_title}" de {author_name} sous forme d'enquête policière interactive.
+    RÈGLES STRICTES :
+    1. NE PAS adapter l'histoire du film - créer un NOUVEAU crime
+    2. Utiliser l'univers, l'époque, le lieu du film mais changer complètement l'intrigue
+    3. Mélanger 1-2 personnages du film avec 3-4 nouveaux suspects inventés
+    4. Le vrai coupable NE DOIT PAS être évident - créer de fausses pistes
+    5. Ajouter des plot twists et retournements de situation
 
-Description du film original: {film_description}, vous pouvez ajouter d'autres infos que vous avez sur ce  film pour compléter
+
+    RÈGLE ANTI-SPOILER:
+    - Le "contexte" ne doit JAMAIS révéler l'identité du coupable
+    - Le "crime" ne doit PAS nommer le responsable
+    - Présente la situation comme un mystère à résoudre
+    - Le joueur doit découvrir qui est le coupable via l'enquête
 
 
-RÈGLES IMPORTANTES:
-1. RESPECTE EXACTEMENT l'intrigue du film original
-2. GARDE les vrais personnages, lieux, et événements du film
-3. TRANSFORME l'histoire en enquete que le joueur doit résoudre
-4. Les SUSPECTS doivent être les vrais personnages du film
-5. Les INDICES doivent correspondre aux vrais éléments de l'intrigue
-6. La SOLUTION doit révéler ce qui se passe vraiment dans le film
-7. GARDE l'époque, l'ambiance et l'univers exact du film
+    CONTEXTE DU FILM : {film_description}
 
-IMPORTANT: Réponds UNIQUEMENT avec un JSON valide, sans texte supplémentaire. Structure exacte:
+    NE JAMAIS SPOILER LE COUPABLE DANS LA DESCIRPTION ETC
 
-{{
-    "titre": "Enquête basée sur {film_title}",
-    "contexte": "Situation du film adaptée en enquête (2-3 phrases avec les vrais éléments)",
-    "crime": "Le vrai mystère/crime/événement central du film à élucider",
-    "suspects": [
-        {{
-            "nom": "Nom EXACT du personnage du film",
-            "description": "Son vrai rôle dans le film",
-            "mobile": "Ses vraies motivations dans l'histoire",
-            "alibi": "Son comportement réel dans le film"
+    STRUCTURE OBLIGATOIRE :
+    {{
+        "titre": "Titre accrocheur de l'enquête (pas le titre du film)",
+        "contexte": "Situation initiale dans l'univers du film",
+        "crime": "Nouveau crime inventé (pas celui du film)",
+        "suspects": [
+            {{
+                "nom": "Nom du suspect",
+                "description": "Description physique et psychologique",
+                "mobile": "Raison de commettre le crime",
+                "alibi": "Défense du suspect",
+                "origine": "personnage_film" ou "nouveau_personnage",
+                "est_coupable": true/false,
+                "indices_contre": ["Liste d'indices qui l'accusent"],
+                "indices_pour": ["Liste d'éléments qui l'innocentent"]
+            }}
+        ],
+        "indices": [
+            {{
+                "numero": 1,
+                "titre": "Nom de l'indice",
+                "description": "Description détaillée",
+                "lieu_decouverte": "Où est trouvé l'indice",
+                "interpretation": "Ce que ça suggère",
+                "est_trompeur": true/false,
+                "suspects_impliques": ["Noms des suspects concernés"]
+            }}
+        ],
+        "etapes": [
+            {{
+                "numero": 1,
+                "titre": "Phase de l'enquête",
+                "description": "Ce qui se passe",
+                "choix": ["Option A", "Option B", "Option C"],
+                "indices_reveles": ["Indices découverts à cette étape"],
+                "plot_twist": "Révélation inattendue (optionnel)"
+            }}
+        ],
+        "solution": {{
+            "coupable": "Nom du vrai coupable",
+            "mobile_reel": "Vraie raison du crime",
+            "methode": "Comment le crime a été commis",
+            "revelation": "Comment tout s'explique",
+            "fausses_pistes_expliquees": "Pourquoi les autres étaient suspects"
         }}
-    ],
-    "indices": [
-        {{
-            "numero": 1,
-            "titre": "Élément réel du film",
-            "description": "Vrai détail/objet/événement important de l'intrigue",
-            "lieu": "Vrai lieu du film où cela se passe"
-        }}
-    ],
-    "etapes": [
-        {{
-            "numero": 1,
-            "titre": "Étape basée sur une scène du film",
-            "description": "Action inspirée d'une vraie séquence du film",
-            "question": "Question sur les vrais événements du film",
-            "choix": ["Options basées sur les vraies possibilités du film"]
-        }}
-    ],
-    "solution": {{
-        "coupable": "Le vrai responsable selon l'intrigue du film",
-        "explication": "La vraie résolution de l'intrigue du film",
-        "indices_cles": ["Les vrais éléments qui mènent à la résolution dans le film"]
     }}
-}}
 
-Crée 3-4 suspects (vrais personnages), 4-5 indices (vrais éléments), et 3-4 étapes (vraies séquences du film).
-        """
+    EXIGENCES ANTI-MONOTONIE :
+    - AU MOINS 5 suspects avec des mobiles crédibles
+    - AU MOINS 2 fausses pistes majeures
+    - AU MOINS 1 plot twist majeur dans les étapes
+    - Des indices contradictoires qui remettent en question les premières impressions
+    - Le coupable ne doit PAS être le suspect le plus évident au début
 
+    EXEMPLE D'INSPIRATION (ne pas copier) :
+    Si film = "Titanic" → Enquête sur un vol de bijoux pendant la traversée
+    Si film = "Le Parrain" → Enquête sur un empoisonnement pendant un mariage mafieux
+    Si film = "Inception" → Enquête sur la mort suspecte d'un psychologue spécialisé en rêves
+
+    Génère maintenant une enquête ORIGINALE et IMPRÉVISIBLE !
+    """
     def extract_json_from_reponse (self, response_text:str) -> Dict[str, Any]:
         """
         Extraction JSON - Nettoie la réponse de l'IA

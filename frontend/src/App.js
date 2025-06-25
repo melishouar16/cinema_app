@@ -44,19 +44,24 @@ const AppContent = () => {
   const [nightMode, setNightMode] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
 
+  // Fonction de navigation que nous passerons aux composants
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+  };
+
   // navigation simple
   const getPageContent = () => {
     switch (currentPage) {
       case "home":
-        return <Pages.Home />;
+        return <Pages.Home onNavigate={handleNavigation} />;
       case "create":
-        return <Pages.CreateEnquete />;
+        return <Pages.CreateEnquete onNavigate={handleNavigation} />;
       case "play":
-        return <Pages.PlayEnquete />;
+        return <Pages.PlayEnquete onNavigate={handleNavigation} />;
       case "auth":
-        return <Pages.Auth />;
+        return <Pages.Auth onNavigate={handleNavigation} />;
       default:
-        return <Pages.Home />;
+        return <Pages.Home onNavigate={handleNavigation} />;
     }
   };
 
@@ -102,7 +107,7 @@ const AppContent = () => {
   );
 };
 
-// react monte AuthProvider et crée le contexte ensuite  useAuth s'execute (contexte disponible)
+// react monte AuthProvider et crée le contexte ensuite useAuth s'execute (contexte disponible)
 function App() {
   return (
     <AuthProvider>

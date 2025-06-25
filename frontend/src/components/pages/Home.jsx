@@ -1,10 +1,9 @@
-// frontend/src/components/pages/Home.jsx - Version simplifiée
 import React, { useState, useEffect } from "react";
 import { Container, Typography } from "../atoms";
 import { useAuth } from "../../contexts/AuthContext";
 import enqueteService from "../../services/enqueteService";
 
-const Home = () => {
+const Home = ({ onNavigate }) => {
     const { isAuthenticated } = useAuth();
     const [enquetes, setEnquetes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,7 +27,22 @@ const Home = () => {
             alert('Connectez-vous pour jouer !');
             return;
         }
-        console.log('Jouer à l\'enquête:', enqueteId);
+
+        // Naviguer vers la page PlayEnquete avec l'ID de l'enquête
+        console.log('Navigation vers PlayEnquete avec enquête ID:', enqueteId);
+
+        // Optionnel : Stocker l'ID de l'enquête dans le localStorage pour la récupérer dans PlayEnquete
+        localStorage.setItem('currentEnqueteId', enqueteId);
+
+        // Naviguer vers la page play
+        if (onNavigate) {
+            onNavigate('play');
+        }
+    };
+
+    const handleDetails = (enqueteId) => {
+        // Fonction pour afficher les détails (à implémenter plus tard)
+        console.log('Afficher détails enquête:', enqueteId);
     };
 
     if (loading) {
@@ -117,6 +131,7 @@ const Home = () => {
                             </button>
 
                             <button
+                                onClick={() => handleDetails(enquete.id)}
                                 style={{
                                     backgroundColor: '#17a2b8',
                                     color: 'white',
