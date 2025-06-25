@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Typography } from "../atoms";
 import { useAuth } from "../../contexts/AuthContext";
+import { NightModeContext } from "../../contexts/NightModeContext"; // Ajouter import night mode
 import enqueteService from "../../services/enqueteService";
 
 const Home = ({ onNavigate }) => {
     const { isAuthenticated } = useAuth();
+    const { nightMode } = useContext(NightModeContext); // Ajouter night mode context
     const [enquetes, setEnquetes] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -47,23 +49,42 @@ const Home = ({ onNavigate }) => {
 
     if (loading) {
         return (
-            <Container.Base style={{ padding: '2rem', textAlign: 'center' }}>
-                <Typography.Title>Chargement...</Typography.Title>
+            <Container.Base style={{
+                padding: '2rem',
+                textAlign: 'center',
+                backgroundColor: nightMode ? "#1a1a1a" : "white", // Night mode
+                color: nightMode ? "white" : "black", // Night mode
+                minHeight: "100vh" // Night mode
+            }}>
+                <Typography.Title style={{ color: nightMode ? "white" : "black" }}>
+                    Chargement...
+                </Typography.Title>
             </Container.Base>
         );
     }
 
     return (
-        <Container.Base style={{ padding: '2rem' }}>
-            <Typography.Title>Enquêtes Policières</Typography.Title>
+        <Container.Base style={{
+            padding: '2rem',
+            backgroundColor: nightMode ? "#1a1a1a" : "white", // Night mode
+            color: nightMode ? "white" : "black", // Night mode
+            minHeight: "100vh" // Night mode
+        }}>
+            <Typography.Title style={{ color: nightMode ? "white" : "black" }}>
+                Enquêtes Policières
+            </Typography.Title>
 
-            <Typography.Paragraph style={{ color: '#666', marginBottom: '2rem' }}>
+            <Typography.Paragraph style={{
+                color: nightMode ? "#ccc" : '#666', // Night mode
+                marginBottom: '2rem'
+            }}>
                 Découvrez des enquêtes générées par IA basées sur vos films préférés
             </Typography.Paragraph>
 
             {!isAuthenticated && (
                 <div style={{
-                    backgroundColor: '#e8f4fd',
+                    backgroundColor: nightMode ? "#1e3a5f" : '#e8f4fd', // Night mode
+                    color: nightMode ? "#87ceeb" : "black", // Night mode
                     padding: '1rem',
                     borderRadius: '4px',
                     marginBottom: '2rem',
@@ -83,20 +104,23 @@ const Home = ({ onNavigate }) => {
                     <div
                         key={enquete.id}
                         style={{
-                            border: '1px solid #ddd',
+                            border: nightMode ? "1px solid #444" : '1px solid #ddd', // Night mode
                             borderRadius: '8px',
                             padding: '1.5rem',
-                            backgroundColor: 'white',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            backgroundColor: nightMode ? "#2d2d2d" : 'white', // Night mode
+                            boxShadow: nightMode ? "0 2px 4px rgba(0,0,0,0.3)" : '0 2px 4px rgba(0,0,0,0.1)' // Night mode
                         }}
                     >
-                        <Typography.SubTitle style={{ marginBottom: '1rem' }}>
+                        <Typography.SubTitle style={{
+                            marginBottom: '1rem',
+                            color: nightMode ? "white" : "black" // Night mode
+                        }}>
                             {enquete.titre}
                         </Typography.SubTitle>
 
                         {enquete.description !== "Enquête générée par IA" && (
                             <Typography.Paragraph style={{
-                                color: '#666',
+                                color: nightMode ? "#ccc" : '#666', // Night mode
                                 marginBottom: '1rem',
                                 fontSize: '0.9rem'
                             }}>
@@ -106,7 +130,7 @@ const Home = ({ onNavigate }) => {
 
                         <div style={{
                             fontSize: '0.85rem',
-                            color: '#888',
+                            color: nightMode ? "#aaa" : '#888', // Night mode
                             marginBottom: '1.5rem'
                         }}>
                             Créée par <strong>{enquete.createur_nom}</strong>
@@ -153,12 +177,14 @@ const Home = ({ onNavigate }) => {
                 <div style={{
                     textAlign: 'center',
                     padding: '3rem',
-                    backgroundColor: '#f8f9fa',
+                    backgroundColor: nightMode ? "#2d2d2d" : '#f8f9fa', // Night mode
                     borderRadius: '8px',
                     marginTop: '2rem'
                 }}>
-                    <Typography.SubTitle>Aucune enquête disponible</Typography.SubTitle>
-                    <Typography.Paragraph style={{ color: '#666' }}>
+                    <Typography.SubTitle style={{ color: nightMode ? "white" : "black" }}>
+                        Aucune enquête disponible
+                    </Typography.SubTitle>
+                    <Typography.Paragraph style={{ color: nightMode ? "#ccc" : '#666' }}>
                         Soyez le premier à créer une enquête !
                     </Typography.Paragraph>
                 </div>
