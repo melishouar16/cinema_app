@@ -37,6 +37,9 @@ const PlayEnquete = ({ onNavigate }) => {
     const [finalAccusation, setFinalAccusation] = useState(null) // Qui le joueur accuse
     const [hasWon, setHasWon] = useState(false) // Le joueur a-t-il gagné ?
 
+    // Session key pour localStorage
+    const sessionKey = `enquete_session_${localStorage.getItem("currentEnqueteId") || 'temp'}`
+
     // Styles dynamiques selon le night mode
     const pageStyle = {
         backgroundColor: nightMode ? "#1a1a1a" : "white",
@@ -55,9 +58,50 @@ const PlayEnquete = ({ onNavigate }) => {
         textAlign: "center"
     }
 
+    // ajout sauvegarde et chargement
+    const saveGameState = () => {
+        const gameState = {
+            gameStarted,
+            currentPhase,
+            gameCompleted,
+            discoveredIndices,
+            interrogatedSuspects,
+            playerNotes,
+            finalAccusation,
+            hasWon
+        }
+        localStorage.setItem(sessionKey, JSON.stringify(gameState))
+    }
+
+    const loadGameState = () => {
+        try {
+            const saved = localStorage.getItem(sessionKey)
+            if (saved) {
+                const state = JSON.parse(saved)
+                setGameStarted(state.gameStarted || false)
+                setCurrentPhase(state.currentPhase || "investigation")
+                setGameCompleted(state.gameCompleted || false)
+                setDiscoveredIndices(state.discoveredIndices || [])
+                setInterrogatedSuspects(state.interrogatedSuspects || [])
+                setPlayerNotes(state.playerNotes || "")
+                setFinalAccusation(state.finalAccusation || null)
+                setHasWon(state.hasWon || false)
+            }
+        } catch (error) {
+            console.log('Erreur chargement session:', error)
+        }
+    }
+
     useEffect(() => {
         loadEnquete()
     }, [isAuthenticated])
+
+    // auto-save
+    useEffect(() => {
+        if (enquete && scenario) {
+            saveGameState()
+        }
+    }, [gameStarted, currentPhase, gameCompleted, discoveredIndices, interrogatedSuspects, playerNotes, finalAccusation, hasWon])
 
     const loadEnquete = async () => {
         try {
@@ -77,6 +121,10 @@ const PlayEnquete = ({ onNavigate }) => {
                 const parsedScenario = JSON.parse(enqueteData.scenario_json)
                 setScenario(parsedScenario)
             }
+
+            // 🔹 AJOUT : Charger l'état sauvegardé
+            setTimeout(() => loadGameState(), 100)
+
         } catch (err) {
             setError("Erreur lors du chargement de l'enquête")
         } finally {
@@ -87,6 +135,7 @@ const PlayEnquete = ({ onNavigate }) => {
     // Retourner à la page d'accueil
     const handleBackToHome = () => {
         localStorage.removeItem("currentEnqueteId")
+        localStorage.removeItem(sessionKey) // 🔹 AJOUT : nettoyer la session
         if (onNavigate) onNavigate("home")
     }
 

@@ -1,10 +1,9 @@
 from django.contrib import admin
 from .models import Auteur, Film
 from django.db.models import Count
-from .models import Enquete, SessionJeu, EvaluationEnquete
+from .models import Enquete, EvaluationEnquete
 
 admin.site.register(Enquete)
-admin.site.register(SessionJeu)
 admin.site.register(EvaluationEnquete)
 
 class FilmInline(admin.TabularInline): #présentation en tableau

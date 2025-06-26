@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu, UserProfile
+from .models import Auteur, Film, Enquete, EvaluationEnquete, UserProfile
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -95,31 +95,6 @@ class EnqueteSerializer(serializers.ModelSerializer):
 
         return links
 
-class SessionJeuSerializer(serializers.ModelSerializer):
-    enquete_titre = serializers.CharField(source='enquete.titre', read_only=True)
-    joueur_nom = serializers.CharField(source='joueur.username', read_only=True)
-    _links = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SessionJeu
-        fields = [
-            'id', 'joueur', 'joueur_nom',
-            'enquete', 'enquete_titre',
-            'etape_actuelle', 'statut', 'date_creation', '_links'
-        ]
-
-    def get__links(self, obj):
-        request = self.context.get('request')
-        if not request:
-            return {}
-
-        return {
-            'self': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
-            'enquete': reverse('enquete-detail', kwargs={'pk': obj.enquete.pk}, request=request),
-            'update': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
-            'delete': reverse('sessionjeu-detail', kwargs={'pk': obj.pk}, request=request),
-            'list': reverse('sessionjeu-list', request=request)
-        }
 
 class EvaluationEnqueteSerializer(serializers.ModelSerializer):
     enquete_titre = serializers.CharField(source='enquete.titre', read_only=True)
@@ -151,7 +126,6 @@ class EvaluationEnqueteSerializer(serializers.ModelSerializer):
 # ajout d'un serializer pour afficher les details d'une enquete ( pour film source par exemple afficher description en plus de nom)
 class EnqueteDetailsSerializer(serializers.ModelSerializer):
     film_source = FilmSerializer(read_only=True) # récupére tout
-    session = SessionJeuSerializer(many=True, read_only=True)
     evaluations = EvaluationEnqueteSerializer(many=True, read_only=True)
     createur_nom = serializers.CharField(source='createur.username', read_only=True)
     _links = serializers.SerializerMethodField()
@@ -174,7 +148,6 @@ class EnqueteDetailsSerializer(serializers.ModelSerializer):
         links = {
             'self': reverse('enquete-detail', kwargs={'pk': obj.pk}, request=request),
             'film_source': reverse('film-detail', kwargs={'pk': obj.film_source.pk}, request=request),
-            'sessions': f"{reverse('sessionjeu-list', request=request)}?enquete={obj.pk}",
             'evaluations': f"{reverse('evaluationenquete-list', request=request)}?enquete={obj.pk}",
         }
 
@@ -215,7 +188,6 @@ class UserSerializer (serializers.ModelSerializer):
         return {
             'self': reverse('user-detail', kwargs={'pk': obj.pk}, request=request),
             'enquetes_creees': f"{reverse('enquete-list', request=request)}?createur={obj.pk}",
-            'sessions': f"{reverse('sessionjeu-list', request=request)}?joueur={obj.pk}",
             'evaluations': f"{reverse('evaluationenquete-list', request=request)}?evaluateur={obj.pk}",
 
             'update': reverse('user-detail', kwargs={'pk': obj.pk}, request=request),

@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Auteur, Film, Enquete, EvaluationEnquete, SessionJeu
-from .serializers import UserSerializer, RegisterSerializer, AuteurSerializer, FilmSerializer, EnqueteSerializer, EnqueteDetailsSerializer, SessionJeuSerializer, EvaluationEnqueteSerializer, UserSerializer
+from .models import Auteur, Film, Enquete, EvaluationEnquete
+from .serializers import UserSerializer, RegisterSerializer, AuteurSerializer, FilmSerializer, EnqueteSerializer, EnqueteDetailsSerializer, EvaluationEnqueteSerializer, UserSerializer
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -66,10 +66,6 @@ class EnqueteViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:  # GET
             return [AllowAny()]
         return [IsAuthenticated()]
-
-class SessionJeuViewSet (viewsets.ModelViewSet):
-    queryset = SessionJeu.objects.all()
-    serializer_class = SessionJeuSerializer
 
 class EvaluationEnqueteViewSet (viewsets.ModelViewSet):
     queryset = EvaluationEnquete.objects.all()

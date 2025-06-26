@@ -71,28 +71,6 @@ class Enquete (models.Model):
         return self.titre
 
 
-class SessionJeu(models.Model):
-
-    class Statut(models.TextChoices):
-        EN_COURS = 'en_cours', 'En cours'
-        TERMINE = 'termine', 'Terminé'
-        ABANDONNE = 'abandonne', 'Abandonné'
-
-    joueur = models.ForeignKey(User,on_delete = models.CASCADE, related_name ='sessions_jeu')
-    enquete = models.ForeignKey(Enquete, on_delete=models.CASCADE, related_name = 'session')
-
-
-    etape_actuelle = models.IntegerField(default=1)
-
-    statut = models.CharField(max_length=10, choices=Statut.choices, default=Statut.EN_COURS)
-    date_creation = models.DateTimeField(auto_now_add=True)
-    class Meta:
-        unique_together = ['joueur', 'enquete']
-
-    def __str__(self):
-        return f"{self.joueur.username} - {self.enquete.titre} "
-
-
 class  EvaluationEnquete(models.Model):
     evaluateur = models.ForeignKey(User, on_delete= models.CASCADE, related_name='evaluations')
     enquete = models.ForeignKey (Enquete, on_delete=models.CASCADE, related_name='evaluations')
