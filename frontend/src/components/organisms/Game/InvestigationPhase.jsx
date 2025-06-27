@@ -33,11 +33,19 @@ const InvestigationPhase = ({
             </Typography.SubTitle>
 
             <Typography.Paragraph style={{
-                marginBottom: "2rem",
+                marginBottom: "1rem",
                 color: textColor
             }}>
-                Examinez la scène de crime et collectez des preuves. Vous devez découvrir au moins 3 indices avant de
-                pouvoir passer aux interrogatoires.
+                Examinez la scène de crime et collectez des preuves. Vous devez découvrir au moins 3 indices avant de pouvoir passer aux interrogatoires.
+            </Typography.Paragraph>
+
+            <Typography.Paragraph style={{
+                marginBottom: "2rem",
+                color: textColor,
+                fontWeight: "bold"
+            }}>
+
+                NB ❗ Vous ne serez débités de points qu'à partir du quatrième indice.
             </Typography.Paragraph>
 
             <div

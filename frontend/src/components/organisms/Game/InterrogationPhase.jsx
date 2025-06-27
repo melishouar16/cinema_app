@@ -32,11 +32,18 @@ const InterrogationPhase = ({
             </Typography.SubTitle>
 
             <Typography.Paragraph style={{
-                marginBottom: "2rem",
+                marginBottom: "1rem",
                 color: textColor
             }}>
-                Interrogez les suspects pour découvrir leurs motivations et alibis. Chaque interrogatoire révèle des
-                informations cruciales.
+                Interrogez les suspects pour découvrir leurs motivations et alibis. Chaque interrogatoire révèle des informations cruciales.
+            </Typography.Paragraph>
+
+            <Typography.Paragraph style={{
+                marginBottom: "2rem",
+                color: textColor,
+                fontWeight: "bold"
+            }}>
+                NB ❗ Vous ne serez débités de points qu'à partir du troisième interrogatoire.
             </Typography.Paragraph>
 
             <div

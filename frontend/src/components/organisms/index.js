@@ -6,7 +6,6 @@ import {
     InvestigationPhase,
     InterrogationPhase,
     AccusationPhase,
-    GameSolution,
     GameNotes
 } from "./Game";
 
@@ -18,6 +17,5 @@ export {
     InvestigationPhase,
     InterrogationPhase,
     AccusationPhase,
-    GameSolution,
     GameNotes
 };

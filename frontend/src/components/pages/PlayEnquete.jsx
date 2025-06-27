@@ -9,11 +9,15 @@ import {
     InvestigationPhase,
     InterrogationPhase,
     AccusationPhase,
-    GameSolution,
     GameNotes
 } from "../organisms"
-import { FaSearch, FaTimes, FaArrowLeft } from "react-icons/fa"
-import { Button } from "../molecules"
+import { FaSearch, FaTimes, FaArrowLeft, FaEdit } from "react-icons/fa"
+import { Button, Alerte } from "../molecules"
+
+// Imports pour le scoring
+import { LiveScore } from '../molecules/Score'
+import FinalScore from '../organisms/Score/FinalScore'
+import { scoringService } from '../../services/scoringService'
 
 const PlayEnquete = ({ onNavigate }) => {
     const { isAuthenticated } = useAuth()
@@ -22,7 +26,7 @@ const PlayEnquete = ({ onNavigate }) => {
     // stocker data de l'enquete
     const [enquete, setEnquete] = useState(null) // L'enquête complète depuis l'API
     const [scenario, setScenario] = useState(null) // Le scénario JSON parsé
-    const [loading, setLoading] = useState(true) // Pour afficher le loader
+    const [loading, setLoading] = useState(true)// Pour afficher le loader
     const [error, setError] = useState(null) // Messages d'erreur
 
     // gerer le flow du jeu
@@ -36,6 +40,21 @@ const PlayEnquete = ({ onNavigate }) => {
     const [playerNotes, setPlayerNotes] = useState("") // Notes prises par le joueur
     const [finalAccusation, setFinalAccusation] = useState(null) // Qui le joueur accuse
     const [hasWon, setHasWon] = useState(false) // Le joueur a-t-il gagné ?
+
+    // NOUVEAUX ÉTATS pour le scoring - CORRIGÉ avec le nouveau système
+    const [nbAccusationsRatees, setNbAccusationsRatees] = useState(0)
+    const [scoreInfo, setScoreInfo] = useState({
+        score: 1000,
+        grade: "Apprenti Détective",
+        icon: FaEdit,
+        color: "#F59E0B"
+    })
+    const [showFinalScore, setShowFinalScore] = useState(false)
+
+    // NOUVEAUX ÉTATS pour l'alerte personnalisée
+    const [showAlert, setShowAlert] = useState(false)
+    const [alertMessage, setAlertMessage] = useState("")
+    const [alertType, setAlertType] = useState("error")
 
     // Session key pour localStorage
     const sessionKey = `enquete_session_${localStorage.getItem("currentEnqueteId") || 'temp'}`
@@ -58,7 +77,24 @@ const PlayEnquete = ({ onNavigate }) => {
         textAlign: "center"
     }
 
-    // ajout sauvegarde et chargement
+    // NOUVELLE FONCTION pour mettre à jour le score
+    const updateScore = () => {
+        const newScoreInfo = scoringService.getScoreInfo(
+            discoveredIndices.length,
+            interrogatedSuspects.length,
+            nbAccusationsRatees
+        );
+        setScoreInfo(newScoreInfo);
+    };
+
+    // useEffect pour recalculer le score automatiquement quand les données changent
+    useEffect(() => {
+        if (gameStarted) {
+            updateScore();
+        }
+    }, [discoveredIndices.length, interrogatedSuspects.length, nbAccusationsRatees, gameStarted]);
+
+    // Fonctions existantes - ajout sauvegarde et chargement
     const saveGameState = () => {
         const gameState = {
             gameStarted,
@@ -68,7 +104,11 @@ const PlayEnquete = ({ onNavigate }) => {
             interrogatedSuspects,
             playerNotes,
             finalAccusation,
-            hasWon
+            hasWon,
+            // AJOUTS pour le scoring :
+            nbAccusationsRatees,
+            scoreInfo,
+            showFinalScore
         }
         localStorage.setItem(sessionKey, JSON.stringify(gameState))
     }
@@ -86,6 +126,15 @@ const PlayEnquete = ({ onNavigate }) => {
                 setPlayerNotes(state.playerNotes || "")
                 setFinalAccusation(state.finalAccusation || null)
                 setHasWon(state.hasWon || false)
+                // AJOUTS pour le scoring - CORRIGÉ avec le nouveau système par défaut
+                setNbAccusationsRatees(state.nbAccusationsRatees || 0)
+                setScoreInfo(state.scoreInfo || {
+                    score: 1000,
+                    grade: "Apprenti Détective",
+                    icon: FaEdit,
+                    color: "#F59E0B"
+                })
+                setShowFinalScore(state.showFinalScore || false)
             }
         } catch (error) {
             console.log('Erreur chargement session:', error)
@@ -101,7 +150,7 @@ const PlayEnquete = ({ onNavigate }) => {
         if (enquete && scenario) {
             saveGameState()
         }
-    }, [gameStarted, currentPhase, gameCompleted, discoveredIndices, interrogatedSuspects, playerNotes, finalAccusation, hasWon])
+    }, [gameStarted, currentPhase, gameCompleted, discoveredIndices, interrogatedSuspects, playerNotes, finalAccusation, hasWon, nbAccusationsRatees, scoreInfo, showFinalScore])
 
     const loadEnquete = async () => {
         try {
@@ -122,7 +171,7 @@ const PlayEnquete = ({ onNavigate }) => {
                 setScenario(parsedScenario)
             }
 
-            // 🔹 AJOUT : Charger l'état sauvegardé
+            // charger l'état sauvegardé
             setTimeout(() => loadGameState(), 100)
 
         } catch (err) {
@@ -135,7 +184,7 @@ const PlayEnquete = ({ onNavigate }) => {
     // Retourner à la page d'accueil
     const handleBackToHome = () => {
         localStorage.removeItem("currentEnqueteId")
-        localStorage.removeItem(sessionKey) // 🔹 AJOUT : nettoyer la session
+        localStorage.removeItem(sessionKey) // nettoyer la session
         if (onNavigate) onNavigate("home")
     }
 
@@ -150,6 +199,7 @@ const PlayEnquete = ({ onNavigate }) => {
         const alreadyFound = discoveredIndices.find((d) => d.numero === indice.numero)
         if (!alreadyFound) {
             setDiscoveredIndices([...discoveredIndices, indice])
+
         }
     }
 
@@ -159,17 +209,31 @@ const PlayEnquete = ({ onNavigate }) => {
         const alreadyQuestioned = interrogatedSuspects.find((s) => s.nom === suspect.nom)
         if (!alreadyQuestioned) {
             setInterrogatedSuspects([...interrogatedSuspects, suspect])
+
         }
     }
 
+    // faire une accusation
     const handleMakeAccusation = (suspectName) => {
+        const isCorrect = suspectName === scenario?.solution?.coupable
+
+        if (!isCorrect) {
+            // Fausse accusation - incrémenter les erreurs et continuer
+            setNbAccusationsRatees(prev => prev + 1)
+            // Afficher l'alerte personnalisée au lieu de alert()
+            setAlertMessage(" Mauvaise accusation ! L'enquête continue...")
+            setAlertType("error")
+            setShowAlert(true)
+            return
+        }
+
+        // Accusation correcte - terminer le jeu
         setFinalAccusation(suspectName)
         setCurrentPhase("verdict")
-
-        // vérifier si c'est le bon coupable
-        const isCorrect = suspectName === scenario?.solution?.coupable
-        setHasWon(isCorrect)
+        setHasWon(true)
         setGameCompleted(true)
+        setShowFinalScore(true)
+        // Le score sera recalculé automatiquement via useEffect
     }
 
     const handleNextPhase = () => {
@@ -216,18 +280,23 @@ const PlayEnquete = ({ onNavigate }) => {
                     marginBottom: "1rem"
                 }} />
                 <Typography.Title style={{ color: nightMode ? "white" : "black" }}>
-                    Erreur
+                    {error || "Enquête introuvable"}
                 </Typography.Title>
-                <Typography.Paragraph style={{
-                    color: "#dc3545",
-                    marginBottom: "2rem"
-                }}>
-                    {error || "Enquête ou scénario introuvable"}
-                </Typography.Paragraph>
-                <Button.GameButton callBack={handleBackToHome} bgColor="#6c757d">
+                <Button.Default
+                    callBack={handleBackToHome}
+                    style={{
+                        marginTop: "1rem",
+                        padding: "0.75rem 1.5rem",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
                     <FaArrowLeft style={{ marginRight: "0.5rem" }} />
                     Retour à l'accueil
-                </Button.GameButton>
+                </Button.Default>
             </Container.Base>
         )
     }
@@ -235,12 +304,34 @@ const PlayEnquete = ({ onNavigate }) => {
     // Rendu principal du jeu avec night mode
     return (
         <Container.Base style={pageStyle}>
+            {/* Alerte personnalisée */}
+            <Alerte.CustomAlert
+                isVisible={showAlert}
+                message={alertMessage}
+                type={alertType}
+                onClose={() => setShowAlert(false)}
+            />
+
+            {/* NOUVEAU - Indicateur de score en temps réel */}
+            {gameStarted && !gameCompleted && (
+                <LiveScore
+                    scoreInfo={scoreInfo}
+                    stats={{
+                        indices: discoveredIndices.length,
+                        interrogatoires: interrogatedSuspects.length,
+                        erreurs: nbAccusationsRatees
+                    }}
+                />
+            )}
+
+            {/* Header du jeu */}
             <GameHeader
                 scenario={scenario}
                 enquete={enquete}
                 onBackToHome={handleBackToHome}
             />
 
+            {/* Introduction du jeu */}
             {!gameStarted && (
                 <GameIntroduction
                     scenario={scenario}
@@ -248,9 +339,10 @@ const PlayEnquete = ({ onNavigate }) => {
                 />
             )}
 
+            {/* Phases du jeu */}
             {gameStarted && (
-                <div style={{ display: "grid", gap: "2rem" }}>
-                    {currentPhase === "investigation" && (
+                <div>
+                    {currentPhase === "investigation" && !gameCompleted && (
                         <InvestigationPhase
                             scenario={scenario}
                             discoveredIndices={discoveredIndices}
@@ -260,7 +352,7 @@ const PlayEnquete = ({ onNavigate }) => {
                         />
                     )}
 
-                    {currentPhase === "interrogation" && (
+                    {currentPhase === "interrogation" && !gameCompleted && (
                         <InterrogationPhase
                             scenario={scenario}
                             interrogatedSuspects={interrogatedSuspects}
@@ -277,12 +369,17 @@ const PlayEnquete = ({ onNavigate }) => {
                         />
                     )}
 
-                    {gameCompleted && (
-                        <GameSolution
-                            scenario={scenario}
+                    {showFinalScore && (
+                        <FinalScore
+                            scoreInfo={scoreInfo}
+                            stats={{
+                                indices: discoveredIndices.length,
+                                interrogatoires: interrogatedSuspects.length,
+                                erreurs: nbAccusationsRatees
+                            }}
                             hasWon={hasWon}
-                            finalAccusation={finalAccusation}
                             onBackToHome={handleBackToHome}
+                            scenario={scenario} // ← AJOUTEZ JUSTE CETTE LIGNE
                         />
                     )}
 

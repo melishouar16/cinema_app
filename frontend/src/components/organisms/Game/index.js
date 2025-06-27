@@ -3,7 +3,6 @@ import GameIntroduction from "./GameIntroduction";
 import InvestigationPhase from "./InvestigationPhase";
 import InterrogationPhase from "./InterrogationPhase";
 import AccusationPhase from "./AccusationPhase";
-import GameSolution from "./GameSolution";
 import GameNotes from "./GameNotes";
 
 export {
@@ -12,6 +11,5 @@ export {
     InvestigationPhase,
     InterrogationPhase,
     AccusationPhase,
-    GameSolution,
     GameNotes
 };
