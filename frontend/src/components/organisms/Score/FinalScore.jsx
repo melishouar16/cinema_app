@@ -72,7 +72,7 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
                 </div>
             </Container.Flex>
 
-            {/* NOUVELLE SECTION - Indices clés */}
+
             {scenario?.solution?.indices_cles && (
                 <Container.Base style={{
                     background: nightMode ? '#3d3d3d' : 'white',
