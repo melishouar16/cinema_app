@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Typography } from "../atoms";
+import { Evaluation } from "../molecules";
 import { useAuth } from "../../contexts/AuthContext";
 import { NightModeContext } from "../../contexts/NightModeContext"; // Ajouter import night mode
 import enqueteService from "../../services/enqueteService";
@@ -33,7 +34,7 @@ const Home = ({ onNavigate }) => {
         // Naviguer vers la page PlayEnquete avec l'ID de l'enquête
         console.log('Navigation vers PlayEnquete avec enquête ID:', enqueteId);
 
-        // Optionnel : Stocker l'ID de l'enquête dans le localStorage pour la récupérer dans PlayEnquete
+        // Stocker l'ID de l'enquête dans le localStorage pour la récupérer dans PlayEnquete
         localStorage.setItem('currentEnqueteId', enqueteId);
 
         // Naviguer vers la page play
@@ -117,6 +118,12 @@ const Home = ({ onNavigate }) => {
                         }}>
                             {enquete.titre}
                         </Typography.SubTitle>
+
+
+                        <Evaluation.Display
+                            rating={enquete.evaluation_moyenne || 0}
+                            count={enquete.nombre_evaluations || 0}
+                        />
 
                         {enquete.description !== "Enquête générée par IA" && (
                             <Typography.Paragraph style={{

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 class Auteur(models.Model):
@@ -133,3 +133,45 @@ def save_user_profile (sender, instance, **kwargs):
 
 
 
+@receiver(post_save, sender=EvaluationEnquete)
+def update_enquete_evaluation_stats(sender, instance, created, **kwargs):
+    """Met à jour les statistiques d'évaluation de l'enquête"""
+    enquete = instance.enquete
+
+    # Recalculer les statistiques depuis toutes les évaluations
+    evaluations = EvaluationEnquete.objects.filter(enquete=enquete)
+
+    if evaluations.exists():
+        # Calculer la moyenne
+        total_notes = sum(eval.note for eval in evaluations)
+        moyenne = total_notes / evaluations.count()
+
+        # Mettre à jour l'enquête
+        enquete.evaluation_moyenne = round(moyenne, 1)
+        enquete.nombre_evaluations = evaluations.count()
+        enquete.save()
+    else:
+        # Aucune évaluation
+        enquete.evaluation_moyenne = 0.0
+        enquete.nombre_evaluations = 0
+        enquete.save()
+
+@receiver(post_delete, sender=EvaluationEnquete)
+def update_enquete_evaluation_stats_on_delete(sender, instance, **kwargs):
+    """Met à jour les statistiques quand une évaluation est supprimée"""
+    enquete = instance.enquete
+
+    # Recalculer les statistiques
+    evaluations = EvaluationEnquete.objects.filter(enquete=enquete)
+
+    if evaluations.exists():
+        total_notes = sum(eval.note for eval in evaluations)
+        moyenne = total_notes / evaluations.count()
+
+        enquete.evaluation_moyenne = round(moyenne, 1)
+        enquete.nombre_evaluations = evaluations.count()
+        enquete.save()
+    else:
+        enquete.evaluation_moyenne = 0.0
+        enquete.nombre_evaluations = 0
+        enquete.save()
