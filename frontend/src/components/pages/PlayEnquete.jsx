@@ -119,6 +119,14 @@ const PlayEnquete = ({ onNavigate }) => {
             const saved = localStorage.getItem(sessionKey)
             if (saved) {
                 const state = JSON.parse(saved)
+
+                if (state.gameCompleted) {
+
+                    localStorage.removeItem(sessionKey)
+                    return // on charge pas l'état, on repart à zéro
+                }
+
+                // Sinon, on charge normalement l'état sauvegardé
                 setGameStarted(state.gameStarted || false)
                 setCurrentPhase(state.currentPhase || "investigation")
                 setGameCompleted(state.gameCompleted || false)
@@ -138,6 +146,7 @@ const PlayEnquete = ({ onNavigate }) => {
             }
         } catch (error) {
             console.log('Erreur chargement session:', error)
+            localStorage.removeItem(sessionKey)
         }
     }
 

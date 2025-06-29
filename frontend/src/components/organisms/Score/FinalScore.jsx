@@ -15,7 +15,9 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
             borderRadius: '15px',
             margin: '20px 0',
             border: `3px solid ${scoreInfo.color}`,
-            textAlign: 'center'
+            textAlign: 'center',
+            maxWidth: '100%',
+            overflow: 'hidden'
         }}>
             <Typography.Title style={{
                 marginBottom: '20px',
@@ -27,12 +29,13 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
             <ScoreDisplay {...scoreInfo} size="large" />
 
             <Container.Flex style={{
-                justifyContent: 'space-around',
+                justifyContent: 'space-between',
                 margin: '20px 0',
-                flexWrap: 'wrap',
-                gap: '15px'
+                flexWrap: 'nowrap',
+                gap: '10px',
+                maxWidth: '100%'
             }}>
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', flex: '1' }}>
                     <div style={{
                         fontSize: '1.5rem',
                         color: nightMode ? '#06B6D4' : '#007bff',
@@ -45,7 +48,7 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
                     </Typography.Paragraph>
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', flex: '1' }}>
                     <div style={{
                         fontSize: '1.5rem',
                         color: nightMode ? '#F59E0B' : '#ffc107',
@@ -58,7 +61,7 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
                     </Typography.Paragraph>
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', flex: '1' }}>
                     <div style={{
                         fontSize: '1.5rem',
                         color: hasWon ? '#10B981' : '#EF4444',
@@ -71,7 +74,6 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
                     </Typography.Paragraph>
                 </div>
             </Container.Flex>
-
 
             {scenario?.solution?.indices_cles && (
                 <Container.Base style={{
