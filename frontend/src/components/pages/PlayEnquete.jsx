@@ -22,7 +22,7 @@ import FinalScore from '../organisms/Score/FinalScore'
 import { scoringService } from '../../services/scoringService'
 
 const PlayEnquete = ({ onNavigate }) => {
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user } = useAuth()
     const { nightMode } = useContext(NightModeContext) // Récupérer l'état du night mode
 
     // stocker data de l'enquete
@@ -99,6 +99,7 @@ const PlayEnquete = ({ onNavigate }) => {
 
     const saveGameState = () => {
         const gameState = {
+            userId: user?.id,
             gameStarted,
             currentPhase,
             gameCompleted,
@@ -109,7 +110,8 @@ const PlayEnquete = ({ onNavigate }) => {
             hasWon,
             nbAccusationsRatees,
             scoreInfo,
-            showFinalScore
+            showFinalScore,
+            lastSaved: new Date().toISOString()
         }
         localStorage.setItem(sessionKey, JSON.stringify(gameState))
     }
@@ -120,7 +122,13 @@ const PlayEnquete = ({ onNavigate }) => {
             if (saved) {
                 const state = JSON.parse(saved)
 
+                if (state.userId && state.userId !== user?.id) {
+                    console.log('Session appartient à un autre utilisateur, ignorée')
+                    return
+                }
+
                 if (state.gameCompleted) {
+
 
                     localStorage.removeItem(sessionKey)
                     return // on charge pas l'état, on repart à zéro
