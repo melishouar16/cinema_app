@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         authService.logout();
         setUser(null);
+        window.location.reload();
     };
 
     const isAuthenticated = !!user;

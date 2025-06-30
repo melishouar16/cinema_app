@@ -162,6 +162,7 @@ const PlayEnquete = ({ onNavigate }) => {
         loadEnquete()
     }, [isAuthenticated])
 
+
     // auto-save
     useEffect(() => {
         if (enquete && scenario) {
@@ -170,6 +171,13 @@ const PlayEnquete = ({ onNavigate }) => {
     }, [gameStarted, currentPhase, gameCompleted, discoveredIndices, interrogatedSuspects, playerNotes, finalAccusation, hasWon, nbAccusationsRatees, scoreInfo, showFinalScore])
 
     const loadEnquete = async () => {
+        // bloquer si pas connecté
+        if (!isAuthenticated) {
+            setError("Vous devez être connecté pour jouer");
+            setLoading(false);
+            return;
+        }
+
         try {
             // Récupérer l'enquete
             const enqueteId = localStorage.getItem("currentEnqueteId")
@@ -232,6 +240,12 @@ const PlayEnquete = ({ onNavigate }) => {
 
     // Fonction pour évaluer l'enquête
     const handleEvaluation = async (note) => {
+        // evaluation seulement si connecté
+        if (!isAuthenticated) {
+            alert('Vous devez être connecté pour évaluer');
+            return;
+        }
+
         try {
             await evaluationService.create(enquete.id, note);
             console.log('Évaluation envoyée avec succès');
@@ -278,6 +292,36 @@ const PlayEnquete = ({ onNavigate }) => {
     const isInterrogationComplete = () => {
         // Au moins 2 suspects ou tous les suspects disponibles
         return interrogatedSuspects.length >= Math.min(2, scenario?.suspects?.length || 0)
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <Container.Base style={{
+                ...pageStyle,
+                textAlign: 'center'
+            }}>
+                <Typography.Title style={{ color: nightMode ? "white" : "black" }}>
+                    Accès refusé
+                </Typography.Title>
+                <Typography.Paragraph style={{ color: nightMode ? "#ccc" : '#666' }}>
+                    Vous devez être connecté pour jouer à une enquête.
+                </Typography.Paragraph>
+                <button
+                    onClick={() => onNavigate("connexion")}
+                    style={{
+                        backgroundColor: '#4A90E2',
+                        color: 'white',
+                        padding: '0.75rem 1.5rem',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        marginTop: '1rem'
+                    }}
+                >
+                    Se connecter
+                </button>
+            </Container.Base>
+        );
     }
 
     // Écran de chargement avec night mode
