@@ -1,6 +1,15 @@
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
-import {
+export { AuthTabs, LoginForm, RegisterForm } from "./Auth";
+
+
+export {
+    UserDashboard,
+    UserProfile,
+    UserStats,
+    EnqueteHistory
+} from "./User";
+
+
+export {
     GameHeader,
     GameIntroduction,
     InvestigationPhase,
@@ -8,14 +17,3 @@ import {
     AccusationPhase,
     GameNotes
 } from "./Game";
-
-export {
-    LoginForm,
-    RegisterForm,
-    GameHeader,
-    GameIntroduction,
-    InvestigationPhase,
-    InterrogationPhase,
-    AccusationPhase,
-    GameNotes
-};

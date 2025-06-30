@@ -59,7 +59,7 @@ const PlayEnquete = ({ onNavigate }) => {
     const [alertType, setAlertType] = useState("error")
 
     // Session key pour localStorage
-    const sessionKey = `enquete_session_${localStorage.getItem("currentEnqueteId") || 'temp'}`
+    const sessionKey = `enquete_session_${user?.id || 'anonymous'}_${localStorage.getItem("currentEnqueteId") || 'temp'}`
 
 
     const pageStyle = {
