@@ -67,6 +67,34 @@ class EnqueteViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsAuthenticated()]
 
+
+    @action(detail=False, methods=['delete'])
+    def delete_all(self, request):
+        """Supprimer toutes les enquêtes - DELETE /api/enquetes/delete_all/"""
+
+        # vérification de permission
+        if not request.user.is_staff:
+            return Response(
+                {'error': 'Permission refusée'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Compter le nombre d'enquêtes avant suppression
+        count = Enquete.objects.count()
+
+        if count == 0:
+            return Response({
+                'message': 'Aucune enquête à supprimer',
+                'count': 0
+            })
+
+        Enquete.objects.all().delete()
+
+        return Response({
+            'message': f'{count} enquête(s) supprimée(s) avec succès',
+            'count': count
+        }, status=status.HTTP_200_OK)
+
 class EvaluationEnqueteViewSet (viewsets.ModelViewSet):
     queryset = EvaluationEnquete.objects.all()
     serializer_class = EvaluationEnqueteSerializer
