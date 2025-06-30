@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from "./store";
@@ -11,6 +12,8 @@ import './App.css';
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // théme jour/nuit
   const nightTheme = {
@@ -44,32 +47,15 @@ const AppContent = () => {
   const [nightMode, setNightMode] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
 
-  // Fonction de navigation que nous passerons aux composants
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-  };
-
-  // navigation simple
-  const getPageContent = () => {
-    switch (currentPage) {
-      case "home":
-        return <Pages.Home onNavigate={handleNavigation} />;
-      case "create":
-        return <Pages.CreateEnquete onNavigate={handleNavigation} />;
-      case "play":
-        return <Pages.PlayEnquete onNavigate={handleNavigation} />;
-      case "auth":
-        return <Pages.Auth onNavigate={handleNavigation} />;
-      default:
-        return <Pages.Home onNavigate={handleNavigation} />;
-    }
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   const menuItems = [
-    { slug: "home", text: "Accueil", icon: <FaHome /> },
-    { slug: "create", text: "Créer", icon: <FaPlus /> },
-    { slug: "play", text: "Jouer", icon: <FaGamepad /> },
-    { slug: "auth", text: isAuthenticated ? "Profil" : "Connexion", icon: <FaUser /> },
+    { slug: "home", text: "Accueil", icon: <FaHome />, path: "/" },
+    { slug: "create", text: "Créer", icon: <FaPlus />, path: "/creer" },
+    { slug: "play", text: "Jouer", icon: <FaGamepad />, path: "/play" },
+    { slug: "auth", text: isAuthenticated ? "Profil" : "Connexion", icon: <FaUser />, path: "/connexion" },
   ];
 
   return (
@@ -83,11 +69,11 @@ const AppContent = () => {
           }}>
 
             <Menu.Bar>
-              {menuItems.map((item, i) => (
+              {menuItems.map((item) => (
                 <Menu.Tab
-                  key={i}
-                  callBack={() => setCurrentPage(item.slug)}
-                  active={currentPage === item.slug}
+                  key={item.slug}
+                  callBack={() => handleNavigation(item.path)}
+                  active={location.pathname === item.path}
                   icon={item.icon}
                 >
                   {item.text}
@@ -96,8 +82,13 @@ const AppContent = () => {
               <Button.ToggleNight />
             </Menu.Bar>
 
-            <main>
-              {getPageContent()}
+            <main style={{ padding: "1rem" }}>
+              <Routes>
+                <Route path="/" element={<Pages.Home onNavigate={handleNavigation} />} />
+                <Route path="/creer" element={<Pages.CreateEnquete onNavigate={handleNavigation} />} />
+                <Route path="/play" element={<Pages.PlayEnquete onNavigate={handleNavigation} />} />
+                <Route path="/connexion" element={<Pages.Auth onNavigate={handleNavigation} />} />
+              </Routes>
             </main>
 
           </div>
@@ -110,9 +101,11 @@ const AppContent = () => {
 // react monte AuthProvider et crée le contexte ensuite useAuth s'execute (contexte disponible)
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
