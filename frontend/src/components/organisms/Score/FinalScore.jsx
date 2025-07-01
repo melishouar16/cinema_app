@@ -134,21 +134,7 @@ const FinalScore = ({ scoreInfo, stats, hasWon, onBackToHome, scenario }) => {
                 </Typography.Paragraph>
             </Container.Base>
 
-            <button
-                onClick={onBackToHome}
-                style={{
-                    padding: '12px 25px',
-                    borderRadius: '8px',
-                    border: `2px solid ${scoreInfo.color}`,
-                    background: scoreInfo.color,
-                    color: 'white',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: '1rem'
-                }}
-            >
-                Retour à l'accueil
-            </button>
+
         </Container.Base>
     );
 };
