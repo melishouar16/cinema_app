@@ -1,27 +1,124 @@
 [
     {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "email": "admin@test.fr",
+            "is_staff": true,
+            "is_active": true,
+            "is_superuser": true,
+            "password": "admin123"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "alice",
+            "email": "alice@test.fr",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false,
+            "password": "alice123"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "username": "bob",
+            "email": "bob@test.fr",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false,
+            "password": "bob123"
+        }
+    },
+    {
         "model": "movies.auteur",
         "pk": 1,
         "fields": {
-            "nom": "Steven Moffat",
-            "email": "moffat@bbc.com",
-            "date_naissance": "1961-11-18",
-            "date_creation": "2025-05-22",
-            "date_modification": "2025-05-22"
+            "nom": "David Fincher",
+            "email": "fincher@zodiac.com",
+            "date_naissance": "1962-08-28"
+        }
+    },
+    {
+        "model": "movies.auteur",
+        "pk": 2,
+        "fields": {
+            "nom": "Jonathan Demme",
+            "email": "demme@silencelambs.com",
+            "date_naissance": "1944-02-22"
         }
     },
     {
         "model": "movies.film",
         "pk": 1,
         "fields": {
-            "titre": "A Studyee in Pink",
-            "description": "Sherlock Holmes et John Watson enquêtent sur une série de suicides mystérieux à Londres. Un chauffeur de taxi semble lié aux morts, mais quel est son mobile ?",
-            "date_sortie": "2010-07-25",
-            "evaluation": 5,
+            "titre": "Zodiac",
+            "description": "L'enquête obsessionnelle sur le tueur du Zodiaque qui a terrorisé la Californie dans les années 70.",
+            "date_sortie": "2007-03-02",
+            "evaluation": 4,
             "auteur": 1,
-            "statut": "publie",
-            "date_creation": "2025-05-22T09:00:00Z",
-            "date_modification": "2025-05-22T09:00:00Z"
+            "statut": "publie"
+        }
+    },
+    {
+        "model": "movies.film",
+        "pk": 2,
+        "fields": {
+            "titre": "Le Silence des Agneaux",
+            "description": "L'agent FBI Clarice Starling doit interroger le Dr Hannibal Lecter pour attraper Buffalo Bill.",
+            "date_sortie": "1991-02-14",
+            "evaluation": 5,
+            "auteur": 2,
+            "statut": "publie"
+        }
+    },
+    {
+        "model": "movies.enquete",
+        "pk": 1,
+        "fields": {
+            "titre": "Le Mystère du Musée Volé - Inspiré de Zodiac",
+            "description": "Enquête sur un vol mystérieux au musée d'art moderne avec messages cryptés",
+            "scenario_json": "{\"titre\": \"Le Mystère du Musée Volé - Inspiré de Zodiac\", \"contexte\": \"Un vol mystérieux a eu lieu au musée d'art moderne. Le tableau 'La Rêve Écarlate' d'une valeur inestimable a disparu dans des circonstances étranges. L'enquête révèle des messages cryptés et des indices troublants qui rappellent les méthodes du tueur du Zodiaque.\", \"crime\": \"Vol d'œuvre d'art avec messages cryptés et mise en scène élaborée\", \"suspects\": [{\"nom\": \"Arthur Blackwood\", \"profession\": \"Collectionneur d'art réputé\", \"mobile\": \"Envie de posséder 'Le Rêve Écarlate', rivalité familiale connue\", \"alibi\": \"Présence confirmée par plusieurs témoins à une soirée caritative de 19h à 23h au Palace Hotel. Son chauffeur peut attester\"}, {\"nom\": \"Isabelle Moreau\", \"profession\": \"Conservatrice du musée, experte en art moderne\", \"mobile\": \"Potentielle dette de jeu, manque d'argent évident\", \"alibi\": \"Surveillance vidéo la montrant au musée jusqu'à 22h, puis son trajet en taxi jusqu'à chez elle à 22h30 est confirmé par la société de taxis\"}, {\"nom\": \"Victor Martel\", \"profession\": \"Ancien employé du musée\", \"mobile\": \"Rancune envers le musée, connaissance des lieux\", \"alibi\": \"Affirme avoir passé la soirée chez lui seul. Pas de témoin, alibi fragile\"}, {\"nom\": \"Dr. Elias Thorne\", \"profession\": \"Expert en cryptographie, ami d'Isabelle Moreau\", \"mobile\": \"Aucun mobile apparent initialement, intérêt pour la note chiffrée\", \"alibi\": \"Dîner à domicile confirmé par un patient de 20h à 21h30. Aucun autre témoin\"}, {\"nom\": \"Sergei Petrov\", \"profession\": \"Marchand d'art international\", \"mobile\": \"Intérêt pour le marché noir de l'art, connections suspectes\", \"alibi\": \"Vol sur la scène d'une réunion d'affaires à Paris à 20h, confirmé par un appel vidéo documenté\"}, {\"nom\": \"Julian Vance\", \"profession\": \"Garde de sécurité du musée\", \"mobile\": \"Mobile caché, dévoilé seulement à la fin\", \"alibi\": \"Feuille de sécurité confirmée par les caméras de surveillance du musée jusqu'à 22h. Son badge le confirme\"}], \"indices\": [{\"numero\": 1, \"titre\": \"Empreintes partielles\", \"description\": \"Des empreintes partielles de Victor Martel sont trouvées sur la vitre brisée, mais aussi des traces de gants. Les empreintes correspondent à Isabelle Moreau pour les étiquettes et en fait elles correspondent à Julian Vance\", \"lieu\": \"Scène de crime\", \"difficulte\": \"facile\", \"type\": \"Scène de crime\"}, {\"numero\": 2, \"titre\": \"Note chiffrée\", \"description\": \"La note cryptée est déchiffrée par le Dr. Thorne, révélant un message énigmatique en anglais qui alouer des erreurs qui montrent qu'une autre personne a participé au chiffrement. La police découvre que le Dr. Thorne est en contact secret avec Julian Vance\", \"lieu\": \"Vance\", \"difficulte\": \"facile\", \"type\": \"Vance\"}, {\"numero\": 3, \"titre\": \"L'appel manqué\", \"description\": \"Isabelle Moreau a reçu un appel manqué d'un numéro inconnu juste avant le vol. Les enquêteurs découvrent qu'un faux nom a été utilisé pour faire l'appel depuis le café où Victor Martel était censé être\", \"lieu\": \"Archives téléphoniques\", \"difficulte\": \"facile\", \"type\": \"Archives téléphoniques\"}, {\"numero\": 4, \"titre\": \"La clé USB\", \"description\": \"Une clé USB est retrouvée sur le lieu du crime, contenant des plans détaillés du système de sécurité. Les empreintes digitales apparentes relèvent à Isabelle Moreau, mais l'analyse révèle un logiciel spécialisé par Julian Vance\", \"lieu\": \"Scène de crime\", \"difficulte\": \"moyen\", \"type\": \"Scène de crime\"}, {\"numero\": 5, \"titre\": \"La poussière de craie\", \"description\": \"Analyse de la poussière de craie sur la vittre. C'est une formulation unique, utilisée seulement par Isabelle Moreau et Julian. Le Rêve Écarlate. Cette piste vers une connaissance interne, mais il faut découvrir que Julian Vance craie dans le casier personnel de Julian Vance\", \"lieu\": \"Laboratoire\", \"difficulte\": \"moyen\", \"type\": \"Laboratoire\"}, {\"numero\": 6, \"titre\": \"Le témoin silencieux\", \"description\": \"Un sans-abri affirme avoir vu une personne correspondant à la description de Victor Martel quittant le musée vers 22h30. Cependant, il est possible que cette personne ait été témoin mais le témoignage n'est pas tout à fait fiable\", \"lieu\": \"Aux près du musée\", \"difficulte\": \"moyen\", \"type\": \"Aux près du musée\"}, {\"numero\": 7, \"titre\": \"Le coffre-fort personnel\", \"description\": \"Un coffre-fort personnel appartenant à Julian Vance a été forcé et son contenu a été volé quelques jours avant le vol du tableau. Une peinture retrouvée dans le coffre sont identiques à celle utilisée pour le cadre de 'Le Rêve Écarlate'\", \"lieu\": \"Domicile de Julian Vance\", \"difficulte\": \"difficile\", \"type\": \"Domicile de Julian Vance\"}, {\"numero\": 8, \"titre\": \"Le dernier indice : le faux numéro de téléphone\", \"description\": \"L'analyse du faux numéro de téléphone utilisé pour joindre Isabelle Moreau révèle une correspondance numérique avec le code utilisé par Julian Vance, cryptiquement qu'il s'explique par un logiciel informatique utilisé par lui et qu'il a utilisé dans le passé pour des activités illégales\", \"lieu\": \"Archives informatiques\", \"difficulte\": \"difficile\", \"type\": \"Archives informatiques\"}, {\"numero\": 9, \"titre\": \"Le motif de Julian Vance\", \"description\": \"La police découvre que Julian Vance était endetté jusqu'au cou auprès d'un créancier impitoyable et qu'il avait besoin d'argent pour faire disparaître les preuves. Le vol de tableau devait lui permettre de s'acquitter du reste de sa dette\", \"lieu\": \"Archives financières\", \"difficulte\": \"très difficile\", \"type\": \"Archives financières\"}, {\"numero\": 10, \"titre\": \"La confession implicite\", \"description\": \"En confrontant Julian Vance à toutes les preuves accumuleés, celui-ci laisse échapper des tremblements dans sa main sont visibles lorsqu'il examine la photo du tableau volé. Ceci, combiné à tous les autres indices, le démasque\", \"lieu\": \"Salle d'interrogatoire\", \"difficulte\": \"très difficile\", \"type\": \"Salle d'interrogatoire\"}], \"etapes\": [{\"numero\": 1, \"titre\": \"Phase d'Investigation\", \"description\": \"Examinez la scène de crime et collectez des preuves. Vous devez découvrir au moins 3 indices avant de pouvoir passer aux interrogatoires\", \"question\": \"Vous ne serez débités de points qu'à partir du quatrième indice\", \"choix\": [\"Empreintes partielles\", \"Note chiffrée\", \"L'appel manqué\", \"La clé USB\", \"La poussière de craie\", \"Le témoin silencieux\", \"Le coffre-fort personnel\", \"Le dernier indice : le faux numéro de téléphone\", \"Le motif de Julian Vance\", \"La confession implicite\"]}, {\"numero\": 2, \"titre\": \"Phase d'Interrogatoire\", \"description\": \"Interrogez les suspects pour découvrir leurs motivations et alibis. Chaque interrogatoire révèle des informations cruciales\", \"question\": \"Vous ne serez débités de points qu'à partir du troisième interrogatoire\", \"choix\": [\"Arthur Blackwood\", \"Isabelle Moreau\", \"Victor Martel\", \"Dr. Elias Thorne\", \"Sergei Petrov\", \"Julian Vance\"]}, {\"numero\": 3, \"titre\": \"Enquête Terminée\", \"description\": \"Tous les éléments convergent vers le véritable coupable\", \"question\": \"Qui est le véritable coupable du vol du musée ?\", \"choix\": [\"Julian Vance\", \"L'enquête reste ouverte\", \"Un suspect non identifié\"]}], \"solution\": {\"coupable\": \"Julian Vance\", \"explication\": \"Julian Vance, garde de sécurité du musée, était endetté et avait besoin d'argent rapidement. Utilisant sa connaissance des systèmes de sécurité et son accès privilégié, il a organisé le vol en créant des fausses pistes pour détourner les soupçons vers d'autres suspects. Sa connaissance des codes cryptographiques lui a permis de créer les messages chiffrés pour brouiller les pistes.\", \"indices_cles\": [\"La poussière de craie unique (formulation spécifique au musée)\", \"La clé USB avec le logiciel spécialisé (accès interne nécessaire)\", \"Le faux numéro de téléphone (correspondance numérique avec son code)\", \"La confession implicite (tremblements révélateurs)\"], \"surprise\": \"Le garde de sécurité censé protéger les œuvres était en réalité le voleur, utilisant sa position privilégiée pour orchestrer le crime parfait\", \"fausses_pistes\": [\"Les empreintes de Victor Martel étaient des traces anciennes de ses visites au musée\", \"La dette d'Isabelle Moreau était réelle mais sans rapport avec le vol\", \"Le Dr. Thorne était manipulé par Julian pour déchiffrer le message\"]}}",
+            "film_source": 1,
+            "createur": 2,
+            "statut": "publie"
+        }
+    },
+    {
+        "model": "movies.enquete",
+        "pk": 2,
+        "fields": {
+            "titre": "Le Masque de l'Orchidée Noire - Inspiré de Le Silence des Agneaux",
+            "description": "Enquête FBI pour arrêter un tueur en série surnommé 'l'Orchidée Noire'",
+            "scenario_json": "{\"titre\": \"Le Masque de l'Orchidée Noire - Inspiré de Le Silence des Agneaux\", \"contexte\": \"FBI Behavioral Science Unit. Un tueur en série surnommé 'l'Orchidée Noire' enlève des femmes. L'agent Clarice Starling doit mener l'enquête en interrogeant des suspects et en analysant les indices.\", \"crime\": \"Enlèvements et meurtres de jeunes femmes avec rituels étranges liés aux orchidées\", \"suspects\": [{\"nom\": \"Alexandre Dubois\", \"profession\": \"Collectionneur d'art tropical\", \"mobile\": \"Rivalité familiale, passé trouble avec les orchidées, envie de posséder la fleur\", \"alibi\": \"Présence confirmée à un gala caritatif de 19h à 23h, mais plusieurs témoins l'ont vu quitter discrètement les lieux, plusieurs témoins le placent sur place\"}, {\"nom\": \"Isabelle Moreau\", \"profession\": \"Conservatrice du musée\", \"mobile\": \"Aucun mobile apparent au départ, une possible dette de jeu importante\", \"alibi\": \"Présente chez elle de 20h à 22h, selon l'affirmation de son fils, aucun autre témoin\"}, {\"nom\": \"Jean-Luc Armand\", \"profession\": \"Marchand d'art\", \"mobile\": \"Profit financier évident, réputation de voleur d'art\", \"alibi\": \"Affirme avoir passé la soirée dans un bar à cocktails, mais aucun témoin ne le confirme, seulement une carte de crédit utilisée à 21h\"}, {\"nom\": \"Sophie Bernard\", \"profession\": \"Nièce de la famille\", \"mobile\": \"Héritage contesté, relation tendue avec sa famille\", \"alibi\": \"Dîner familial de 19h30 à 22h30, confirmé par sa famille, mais d'une durée plus courte que ce qu'elle a initialement affirmé\"}, {\"nom\": \"Dr. Antoine Lefèvre\", \"profession\": \"Chirurgien\", \"mobile\": \"Intérêts cachés dans l'ésotérisme, fascination pour des rituels anciens\", \"alibi\": \"Opération chirurgicale urgente de 20h à 23h, dossier médical confirmant\"}, {\"nom\": \"Camille Dubois\", \"profession\": \"Fille de la famille\", \"mobile\": \"Révélé à la fin, lié à un secret de famille vieux de plusieurs décennies\", \"alibi\": \"Au cinéma de 20h à 22h30, billet retrouvé, mais a menti sur la personne qui l'accompagnait\"}], \"indices\": [{\"numero\": 1, \"titre\": \"L'empreinte botanique\", \"description\": \"Une empreinte de pollen rare, précise et délicate est trouvée sur les vêtements de la victime, identifiée comme provenant d'une espèce extrêmement rare que seule Isabelle Moreau connaît\", \"lieu\": \"Scène de crime\", \"difficulte\": \"facile\", \"type\": \"Scène de crime\"}, {\"numero\": 2, \"titre\": \"Le message crypté\", \"description\": \"Un message codé est trouvé sur la victime. Le décodage semble avoir les connaissances nécessaires pour créer ce code\", \"lieu\": \"Scène de crime\", \"difficulte\": \"facile\", \"type\": \"Scène de crime\"}, {\"numero\": 3, \"titre\": \"La dette de jeu\", \"description\": \"Une preuve de la dette de jeu d'Isabelle Moreau est découverte, liant possible avec le vol de l'orchidée\", \"lieu\": \"Compte bancaire d'Isabelle\", \"difficulte\": \"facile\", \"type\": \"Compte bancaire d'Isabelle\"}, {\"numero\": 4, \"titre\": \"L'agenda déchiré\", \"description\": \"Un agenda déchiré retrouvé dans le bureau de Sophie Bernard révèle des inscriptions étranges et des annotations concernant les dates des meurtres\", \"lieu\": \"Bureau de Sophie Bernard\", \"difficulte\": \"moyen\", \"type\": \"Bureau de Sophie Bernard\"}, {\"numero\": 5, \"titre\": \"L'instrument chirurgical\", \"description\": \"Un instrument chirurgical unique est retrouvé sur la scène de crime, identique à ceux utilisés par le Dr. Lefèvre\", \"lieu\": \"Scène de crime\", \"difficulte\": \"moyen\", \"type\": \"Scène de crime\"}, {\"numero\": 6, \"titre\": \"Le faux témoignage\", \"description\": \"Camille Dubois ment sur sa présence au cinéma, affirmant avoir été seule alors qu'elle était accompagnée d'une personne non identifiée\", \"lieu\": \"Interrogatoire de Camille\", \"difficulte\": \"moyen\", \"type\": \"Interrogatoire de Camille\"}, {\"numero\": 7, \"titre\": \"Le lien familial caché\", \"description\": \"Des documents anciens révèlent un lien caché entre la famille et la propriétaire de l'orchidée, lié à un héritage contesté et à un lourd secret de famille\", \"lieu\": \"Archives familiales\", \"difficulte\": \"difficile\", \"type\": \"Archives familiales\"}, {\"numero\": 8, \"titre\": \"Le symbole ésotérique\", \"description\": \"La marque en forme d'orchidée sur les victimes est un symbole ésotérique complexe, avec une signification particulière liée à un rituel ancien que seul le Dr Lefèvre semble comprendre en profondeur. Mais des recherches ultérieures révèlent que Camille s'intéressait à l'ésotérisme\", \"lieu\": \"Livres et documents ésotériques\", \"difficulte\": \"difficile\", \"type\": \"Livres et documents ésotériques\"}, {\"numero\": 9, \"titre\": \"L'ADN partiellement effacé\", \"description\": \"L'analyse ADN sur les gants retrouvés près des victimes est partiellement mais révèle une correspondance partielle avec Camille Dubois. L'ADN a été intentionnellement endommagé\", \"lieu\": \"Laboratoire\", \"difficulte\": \"difficile\", \"type\": \"Laboratoire\"}, {\"numero\": 10, \"titre\": \"La confession indirecte\", \"description\": \"Camille Dubois fait finalement pendant l'interrogatoire final en révélant une connaissance précise d'un détail concernant le rituel ésotérique, un détail que seul le véritable coupable pourrait connaître\", \"lieu\": \"Interrogatoire final\", \"difficulte\": \"très difficile\", \"type\": \"Interrogatoire final\"}], \"etapes\": [{\"numero\": 1, \"titre\": \"Phase d'Interrogatoire\", \"description\": \"Interrogez les suspects pour découvrir leurs motivations et alibis. Chaque interrogatoire révèle des informations cruciales\", \"question\": \"Vous ne serez débités de points qu'à partir du troisième interrogatoire\", \"choix\": [\"Alexandre Dubois\", \"Isabelle Moreau\", \"Jean-Luc Armand\", \"Sophie Bernard\", \"Dr. Antoine Lefèvre\", \"Camille Dubois\"]}, {\"numero\": 2, \"titre\": \"Phase d'Investigation\", \"description\": \"Examinez la scène de crime et collectez des preuves. Vous devez découvrir au moins 3 indices avant de pouvoir passer aux interrogatoires\", \"question\": \"Vous ne serez débités de points qu'à partir du quatrième indice\", \"choix\": [\"L'empreinte botanique\", \"Le message crypté\", \"La dette de jeu\", \"L'agenda déchiré\", \"L'instrument chirurgical\", \"Le faux témoignage\", \"Le lien familial caché\", \"Le symbole ésotérique\", \"L'ADN partiellement effacé\", \"La confession indirecte\"]}, {\"numero\": 3, \"titre\": \"Enquête Terminée\", \"description\": \"Tous les éléments convergent vers le véritable coupable\", \"question\": \"Qui est le véritable coupable du Masque de l'Orchidée Noire ?\", \"choix\": [\"Camille Dubois\", \"L'enquête reste ouverte\", \"Un suspect non identifié\"]}], \"solution\": {\"coupable\": \"Camille Dubois\", \"explication\": \"Camille Dubois était motivée par un secret de famille vieux de plusieurs décennies et un héritage contesté. Elle utilisait sa connaissance de l'ésotérisme et des symboles d'orchidées pour masquer ses crimes derrière un rituel mystérieux. Son mensonge sur sa présence au cinéma et sa connaissance précise des détails du rituel l'ont finalement trahie.\", \"indices_cles\": [\"L'empreinte botanique (lié au pollen rare)\", \"Le lien familial caché (héritage contesté)\", \"Le symbole ésotérique (connaissance approfondie)\", \"La confession indirecte (détail que seul le coupable pourrait connaître)\"], \"surprise\": \"Le véritable mobile n'était pas financier mais lié à un lourd secret de famille que Camille voulait protéger à tout prix\", \"fausses_pistes\": [\"La dette de jeu d'Isabelle Moreau détournait l'attention\", \"L'instrument chirurgical du Dr. Lefèvre était un red herring\", \"L'alibi fragile d'Alexandre Dubois était une coïncidence\"]}}",
+            "film_source": 2,
+            "createur": 3,
+            "statut": "publie"
+        }
+    },
+    {
+        "model": "movies.evaluationenquete",
+        "pk": 1,
+        "fields": {
+            "evaluateur": 2,
+            "enquete": 1,
+            "note": 4,
+            "commentaire": "Excellente reconstitution de l'affaire Zodiac ! Très immersif."
+        }
+    },
+    {
+        "model": "movies.evaluationenquete",
+        "pk": 2,
+        "fields": {
+            "evaluateur": 3,
+            "enquete": 2,
+            "note": 5,
+            "commentaire": "Glaçant ! La tension psychologique est parfaitement rendue."
         }
     }
 ]
