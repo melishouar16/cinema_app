@@ -41,7 +41,7 @@ Application de génération d'enquêtes inspirées de films choisis par l'utilis
 
 ## Configuration Gemini AI
 
-1. Aller sur aistudio.google.com/app/apikey
+1. Aller sur [aistudio.google.com/app/apikey]
 2. Se connecter avec son compte gmail
 3. Générer une clé API 
 4. Créer un fichier `.env` dans `/backend/` avec : GEMINI_API_KEY=votre_clé
