@@ -9,8 +9,18 @@ Application de génération d'enquêtes inspirées de films choisis par l'utilis
    git clone git@github.com:melishouar16/cinema_app.git  
    cd cinema_app
    ```
+## Configuration Gemini AI
 
-2. Lancer l'application avec Docker
+1. Aller sur [aistudio.google.com/app/apikey]
+2. Se connecter avec son compte gmail
+3. Générer une clé API 
+4. Créer un fichier `.env` dans `/backend/` avec : GEMINI_API_KEY=votre_clé
+
+## Lancer l'application avec Docker (❗il faudra au préalable executer npm install en front) 
+   ```bash
+   cd backend
+   ```
+
    ```bash
    # Pour une première installation ou après des modifications du code
    docker-compose up -d --build
@@ -19,7 +29,7 @@ Application de génération d'enquêtes inspirées de films choisis par l'utilis
    docker-compose up -d
    ```
 
-## Configuration de la base de données (❗IMPORTANT sinon erreur 500)
+## Configuration de la base de données (❗IMPORTANT si on a pas fait de build sinon erreur 500)
 
 3. Appliquer les migrations pour initialiser la base de données 
    ```bash
@@ -28,8 +38,9 @@ Application de génération d'enquêtes inspirées de films choisis par l'utilis
 ## Chargement des données de test (fixtures)
 
 4. Executer le fichier setup database pour appliques les jeux de données
-
+   ```bash
    docker-compose exec web python setup_database.py
+   ```
 
 ## Création du compte administrateur (facultatif si on a fait le chargement de données)
 
@@ -38,15 +49,6 @@ Application de génération d'enquêtes inspirées de films choisis par l'utilis
    docker-compose exec web python manage.py createsuperuser
    ```
    Suivre les instructions pour créer un nom d'utilisateur et mot de passe.
-
-## Configuration Gemini AI
-
-1. Aller sur [aistudio.google.com/app/apikey]
-2. Se connecter avec son compte gmail
-3. Générer une clé API 
-4. Créer un fichier `.env` dans `/backend/` avec : GEMINI_API_KEY=votre_clé
-
-L'application est maintenant prête à être utilisée.
 
 ## Utilisation
 
@@ -58,7 +60,6 @@ Cette interface permet de :
 - Gérer les auteurs (création, modification, suppression)
 - Gérer les films et leurs statuts (brouillon, publié, archivé)
 - Explorer les données
-  Auutre.... 
 
 ### API REST
 
@@ -85,23 +86,23 @@ L'application expose une API REST avec plusieurs fonctionnalités
 - `PATCH /api/films/{id}/archiver/` - Archiver un film
 
 **Enquêtes**
-- `GET /api/enquetes/ - Lister toutes les enquêtes
-- `POST /api/enquetes/ - Créer une enquête
-- `GET /api/enquetes/{id}/ - Récupérer une enquête
-- `DELETE /api/enquetes/{id}/ - Supprimer une enquête
-- `DELETE /api/enquetes/delete_all/ - Supprimer toutes les enquêtes
+- `GET /api/enquetes/` - Lister toutes les enquêtes
+- `POST /api/enquetes/` - Créer une enquête
+- `GET /api/enquetes/{id}/` - Récupérer une enquête
+- `DELETE /api/enquetes/{id}/` - Supprimer une enquête
+- `DELETE /api/enquetes/delete_all/` - Supprimer toutes les enquêtes
 
 **Évaluations**
-- `POST /api/evaluations/ - Évaluer une enquête
-- `GET /api/evaluations/ - Lister mes évaluations
+- `POST /api/evaluations/` - Évaluer une enquête
+- `GET /api/evaluations/` - Lister mes évaluations
 
 **Users**
-- `POST /api/users/ - Inscription utilisateur
-- `GET /api/users/me/ - Mon profil
-- `GET /api/users/ - Liste utilisateurs
+- `POST /api/users/` - Inscription utilisateur
+- `GET /api/users/me/` - Mon profil
+- `GET /api/users/` - Liste utilisateurs
 
 **Test IA**
-- `POST /api/test-ai/ - Test génération IA
+- `POST /api/test-ai/` - Test génération IA
 - 
 ## Test de l'API
 
