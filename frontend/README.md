@@ -13,10 +13,15 @@ Application React pour créer et jouer des enquêtes policières inspirées de f
    ```bash
    npm install
    ```
-
-3. Lancer l'application
+   
+3. Retourner au dossier backend pour lancer l'application
    ```bash
-   npm start
+   cd ../backend
+   ```
+   
+4. Lancer l'application complète avec Docker
+   ```bash
+   docker-compose up -d --build
    ```
 
 L'application sera accessible sur http://localhost:3000
