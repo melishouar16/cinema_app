@@ -8,6 +8,10 @@ services:
       - .:/app
     ports:
       - "8000:8000"
+
+    env_file:
+      - .env
+
     environment:
       - DEBUG=1 #activer debogage
       - SECRET_KEY=${DJANGO_SECRET_KEY:-django-insecure-default-key-for-dev-only}
