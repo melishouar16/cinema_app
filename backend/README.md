@@ -1,6 +1,6 @@
 # API Cinéma
 
-Application de gestion de films et d'auteurs avec Django et Django REST Framework.
+Application de génération d'enquêtes inspirées de films choisis par l'utilisateur
 
 ## Installation
 
@@ -19,16 +19,32 @@ Application de gestion de films et d'auteurs avec Django et Django REST Framewor
    docker-compose up -d
    ```
 
-3. Appliquer les migrations pour initialiser la base de données
+## Configuration de la base de données (❗IMPORTANT sinon erreur 500)
+
+3. Appliquer les migrations pour initialiser la base de données 
    ```bash
    docker-compose exec web python manage.py migrate
    ```
+## Chargement des données de test (fixtures)
 
-4. Créer un compte administrateur
+4. Executer le fichier setup database pour appliques les jeux de données
+
+   docker-compose exec web python setup_database.py
+
+## Création du compte administrateur (facultatif si on a fait le chargement de données)
+
+5. Créer un compte administrateur ( facultatif si on execute les fixtures)
    ```bash
    docker-compose exec web python manage.py createsuperuser
    ```
    Suivre les instructions pour créer un nom d'utilisateur et mot de passe.
+
+## Configuration Gemini AI
+
+1. Aller sur aistudio.google.com/app/apikey
+2. Se connecter avec son compte gmail
+3. Générer une clé API 
+4. Créer un fichier `.env` dans `/backend/` avec : GEMINI_API_KEY=votre_clé
 
 L'application est maintenant prête à être utilisée.
 
@@ -41,7 +57,8 @@ Accéder à l'interface d'administration Django à l'adresse http://localhost:80
 Cette interface permet de :
 - Gérer les auteurs (création, modification, suppression)
 - Gérer les films et leurs statuts (brouillon, publié, archivé)
-- Explorer les données 
+- Explorer les données
+  Auutre.... 
 
 ### API REST
 
@@ -67,6 +84,25 @@ L'application expose une API REST avec plusieurs fonctionnalités
 - `PATCH /api/films/{id}/` - Modifier un film
 - `PATCH /api/films/{id}/archiver/` - Archiver un film
 
+**Enquêtes**
+- `GET /api/enquetes/ - Lister toutes les enquêtes
+- `POST /api/enquetes/ - Créer une enquête
+- `GET /api/enquetes/{id}/ - Récupérer une enquête
+- `DELETE /api/enquetes/{id}/ - Supprimer une enquête
+- `DELETE /api/enquetes/delete_all/ - Supprimer toutes les enquêtes
+
+**Évaluations**
+- `POST /api/evaluations/ - Évaluer une enquête
+- `GET /api/evaluations/ - Lister mes évaluations
+
+**Users**
+- `POST /api/users/ - Inscription utilisateur
+- `GET /api/users/me/ - Mon profil
+- `GET /api/users/ - Liste utilisateurs
+
+**Test IA**
+- `POST /api/test-ai/ - Test génération IA
+- 
 ## Test de l'API
 
 Deux méthodes sont disponibles pour tester l'API :
@@ -130,6 +166,14 @@ Pour utiliser la ligne de commande :
 - Filtres avancés pour la recherche
 - Relations entre auteurs et films
 - Déploiement simplifié avec Docker
+- Génération automatique d'enquêtes policières par IA Gemini
+- Système de création d'enquêtes basées sur des films
+- Système d'évaluation et notation des enquêtes
+- Gestion des utilisateurs avec inscription/connexion
+- Gestion des sessions de jeu et progression utilisateur
+- Cache intelligent pour optimiser les performances
+- Permissions selon type d'utilisateur
+- Jeux de données de test prêts à l'emploi
 
 ## Technologies utilisées
 
@@ -137,3 +181,5 @@ Pour utiliser la ligne de commande :
 - Django REST Framework 
 - PostgreSQL
 - Docker et Docker Compose
+- Google Gemini AI
+- Bruno 
